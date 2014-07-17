@@ -9,13 +9,16 @@ public class EnemyMissile implements MissileInterface{
 	private int launchTime;
 	private int flyTime;
 	private int damage;
-	// TODO
-	// Add region to missile
+	// TODO Add region to missile
 	
 	
 	//TODO Edit Cons't
 	public EnemyMissile(){
 		
+	}
+	
+	public int getLaunchTime(){
+		return launchTime;
 	}
 	
 	public void run() {
