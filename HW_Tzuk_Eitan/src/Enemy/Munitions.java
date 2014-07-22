@@ -1,21 +1,28 @@
 package Enemy;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.concurrent.PriorityBlockingQueue;
+import java.util.Stack;
+
 
 public abstract class Munitions implements Runnable {
 	private String id;
-	private PriorityBlockingQueue<MissileInterface> missileQueue;	
+	private Stack <MissileInterface> missileStack = new Stack<>();
+
 	
-	public Munitions(String id,MissileComparator missileComp){
+	public Munitions(String id){
 		this.id = id;
-		missileQueue = new PriorityBlockingQueue(0, missileComp);
+	}
+	
+	public String getId(){
+		return id;
+	}
+	
+	public Stack <MissileInterface> getMissileStack(){
+		return missileStack;
 	}
 	
 	public void addMissile(MissileInterface missile){
 		try{
-			missileQueue.add(missile);
+			missileStack.push(missile);
 		}catch(NullPointerException ex){
 			System.out.println("Missile queue is not exist");
 		};

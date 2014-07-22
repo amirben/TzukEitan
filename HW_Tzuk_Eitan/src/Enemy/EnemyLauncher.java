@@ -1,25 +1,65 @@
 package Enemy;
 
+import java.util.ArrayList;
+import java.util.Stack;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class EnemyLauncher extends Munitions{
 	
-	
-	public EnemyLauncher(String id, MissileComparator missileComp) {
-		super(id, missileComp);
-		
-	}
-
+	ArrayList <MissileInterface> missileArray = new ArrayList<>();
+	private boolean beenHit = false;
 	private boolean isHidden;
+	private boolean firstHiddenState;
 	//private int region;
 	
-	
-	public void run() {
-		// TODO Auto-generated method stub
-		
+	public EnemyLauncher(String id,boolean isHidden) {
+		super(id);
+		this.isHidden = isHidden;
+		firstHiddenState = isHidden;
 	}
 
-	@Override
-	public boolean launchMissile() {
+	public void run() {
 		// TODO Auto-generated method stub
+		while(!beenHit){
+			synchronized (this) {
+				try{
+					wait();
+					isHidden = false;
+					launchMissile();	
+				}	
+				//Exception is called when launcher has been hit
+				catch(InterruptedException ex){
+					hasBeenHit();
+				}
+			}	
+		}
+	}
+
+	public void hasBeenHit(){
+		System.out.println("Launcher " + getId() + "has been hit");
+		beenHit = true;
+		//TODO logger
+	}
+	
+	public boolean launchMissile() {
+		//TODO logger
+		Stack missileStack = getMissileStack();
+		if(!missileStack.isEmpty()){
+			EnemyMissile missile = (EnemyMissile)missileStack.pop();
+			missile.start();
+			try {
+				Thread.sleep((long)(500 + 1000 * (Math.random() * 10)));
+				isHidden = firstHiddenState;
+				missile.join();
+			} catch (InterruptedException e) {
+				//if we are here then while the missile is in the air we have been hit
+				hasBeenHit();
+				return false;
+			}
+			return true;
+		}
 		return false;
 	}
 

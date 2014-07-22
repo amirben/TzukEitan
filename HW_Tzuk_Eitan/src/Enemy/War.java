@@ -44,7 +44,7 @@ public class War implements Runnable {
 	public void manageChoise(int choise){
 		switch(choise){
 		
-		case 1:  newInterceptLaunch(); break;
+		case 1:  newInterceptLaunch(); break;//new plane or ship
 		
 		case 2:  newIronDome(); break;
 		
@@ -80,7 +80,6 @@ public class War implements Runnable {
 		System.out.println("How many missiles do you want to add?");
 		missileNum = input.nextInt();
 		for(int i=0 ; i<missileNum ; i++){
-			
 			DefenceMissile tempMissile = new DefenceMissile();
 			launcherDestractor.addMissile(tempMissile);
 		}
@@ -101,7 +100,7 @@ public class War implements Runnable {
 		System.out.println("How many missiles do you want to add?");
 		missileNum = input.nextInt();
 		for(int i=0 ; i<missileNum ; i++){
-			
+			//what properties should a missile has?
 			DefenceMissile tempMissile = new DefenceMissile();
 			ironDome.addMissile(tempMissile);
 		}

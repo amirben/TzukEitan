@@ -1,6 +1,6 @@
 package Enemy;
 
-public interface MissileInterface extends Runnable {
+public interface MissileInterface extends Runnable{
 		
 	
 	/** Need to implement - return boolean if success **/

@@ -1,7 +1,9 @@
 package Enemy;
 
+import javax.swing.plaf.SliderUI;
 
-public class EnemyMissile implements MissileInterface{
+
+public class EnemyMissile extends Thread implements MissileInterface {
 	
 	//Need to add attributes
 	private String id;
@@ -13,25 +15,50 @@ public class EnemyMissile implements MissileInterface{
 	
 	
 	//TODO Edit Cons't
-	public EnemyMissile(){
-		
+	public EnemyMissile(String id, String destination,int launchTime, int flyTime,int damage){
+		this.id = id;
+		this.destination = destination;
+		this.launchTime = launchTime;
+		this.flyTime = flyTime;
+		this.damage = damage;
 	}
 	
+	public void run() {
+		System.out.println("Enemy missile "+ id +" is being launch to "+destination);
+		try{
+			//TODO logger
+			Thread.sleep(flyTime * 1000);
+			damageDestination();
+			
+		//Interrupt is thrown when Enemy missile has been hit. 
+		}catch(InterruptedException ex){
+			hasBeenHit();
+			//TODO add logger
+			
+		}catch(Exception ex){
+			System.out.println("Thred.sleep in EnemyMissile EROR");
+			//TODO add logger
+		}
+	}
+	
+	public void damageDestination( ){
+		System.out.println("Enemy missile: " + id + " hit the destination: " + destination);
+		//TODO logger
+	}
 	public int getLaunchTime(){
 		return launchTime;
 	}
 	
-	public void run() {
-		
-		
-	}
 
 	public boolean fire() {
 		return false;
 	}
 	
 	public boolean hasBeenHit(){
-		return false;
+		//TODO add time
+		System.out.println("Enemy missile "+ id +" has been destroyed by Iron Dome in time: ");
+		//TODO logger
+		return true;
 	}
 
 }
