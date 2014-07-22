@@ -149,9 +149,6 @@ public class War implements Runnable {
 	public void endWar(){
 		showStatistics();
 		//TODO end the war
-		
-
-		
 	}
 
 
