@@ -7,15 +7,19 @@ import Enemy.MunitionsEvent;
 public class LauncherDestractor extends Thread implements MunitionsEvent {
 	private String type; //plane or ship
 	private EnemyLauncher toDestroy;
-	public LauncherDestractor(String type,String id){
-		super(id);
+	private String id;
+	
+	public LauncherDestractor(String type, String id){
+		this.id = id;
 		this.type = type;	
 	}
 	
 	public void run() {
 		synchronized (this) {
 			try{
+				//Wait until user try to destory missile
 				wait();
+				
 				if (toDestroy != null)
 					launchMissile();	
 			}	
@@ -32,7 +36,7 @@ public class LauncherDestractor extends Thread implements MunitionsEvent {
 
 	public boolean launchMissile() {
 		// TODO Auto-generated method stub
-		//crazy
+		/** ADD EVENT **/
 		return false;
 	}
 

@@ -2,40 +2,39 @@ package TzukEitan.missiles;
 
 import Enemy.MissileEvent;
 
-/** missile for plane, ship and iron dome**/
+/** Missile for iron dome**/
 public class DefenceMissile extends Thread implements MissileEvent {
-	private String id; //My id
-	private int destructTime;
+	private String id;
+	//private int destructTime;
 	private EnemyMissile missileToDestroy;
 	private final int LAUNCH_DURATION = 2000;
 	
-	//TODO Edit cons't
-	public DefenceMissile(String id, int destructTime, EnemyMissile missileToDestroy){
-		this.id = id;
-		this.destructTime = destructTime;
-		this.missileToDestroy = missileToDestroy;
-	}
+//	//TODO Edit cons't
+//	public DefenceMissile(String id, int destructTime, EnemyMissile missileToDestroy){
+//		this.id = id;
+//		this.destructTime = destructTime;
+//		this.missileToDestroy = missileToDestroy;
+//	}
 	
 	public DefenceMissile(String id, EnemyMissile missileToDestroy){
 		this.id = id;
-		this.destructTime = 0;
+	//	this.destructTime = 0;
 		this.missileToDestroy = missileToDestroy;
-	}
-	
-	public int getDestructTime(){
-		return destructTime;
 	}
 
 	public void run() {
 		//TODO change this syso to event
-		System.out.println("Defence missile "+ id +" is being launch to destroy missile "+missileToDestroy.getMissileId());
+		//System.out.println("Defence missile "+ id +" is being launch to destroy missile "+missileToDestroy.getMissileId());
+		/** ADD EVENT!! **/
 		try{
 			//Use for the XML version
-			Thread.sleep(1000 * destructTime);
+			//Thread.sleep(1000 * destructTime);
+			
 			//Launch duration
 			Thread.sleep(LAUNCH_DURATION);
 			fire();
 			
+			//Check if the missile is still in the air before trying to destory
 			if (missileToDestroy.isAlive()){
 				//TODO logger
 				//TODO throw event hit
@@ -44,6 +43,7 @@ public class DefenceMissile extends Thread implements MissileEvent {
 			}
 			else{
 				//TODO throw event not hit
+				/**THROW EVENT!!! **/
 			}
 			
 		//Interrupt is thrown when Enemy missile has been hit. 

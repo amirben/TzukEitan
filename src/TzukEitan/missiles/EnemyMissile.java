@@ -7,14 +7,11 @@ import Enemy.MissileEvent;
 
 public class EnemyMissile extends Thread implements MissileEvent {
 	
-	//Need to add attributes
 	private String id;
 	private String destination;
-	private int launchTime;
+	//private int launchTime;
 	private int flyTime;
 	private int damage;
-	// TODO Add region to missile
-	
 	
 	//TODO Edit Cons't
 //	public EnemyMissile(String id, String destination,int launchTime, int flyTime,int damage){
@@ -25,16 +22,18 @@ public class EnemyMissile extends Thread implements MissileEvent {
 //		this.damage = damage;
 //	}
 	
-	public EnemyMissile(String id, String destination, int flyTime,int damage){
+	public EnemyMissile (String id, String destination, int flyTime, int damage){
 		this.id = id;
 		this.destination = destination;
-		this.launchTime = 0;
+		//this.launchTime = 0;
 		this.flyTime = flyTime;
 		this.damage = damage;
 	}
 	
 	public void run() {
-		System.out.println("Enemy missile "+ id +" is being launch to "+destination);
+		//System.out.println("Enemy missile "+ id +" is being launch to "+destination);
+		/**THROW EVENT!!! **/
+		
 		try{
 			//TODO logger
 			Thread.sleep(flyTime * 1000);
@@ -52,21 +51,22 @@ public class EnemyMissile extends Thread implements MissileEvent {
 	}
 	
 	public void damageDestination( ){
-		System.out.println("Enemy missile: " + id + " hit the destination: " + destination);
+		//System.out.println("Enemy missile: " + id + " hit the destination: " + destination);
+		/** THROW EVENT **/
 		//TODO logger
 	}
-	public int getLaunchTime(){
-		return launchTime;
-	}
-	
+
 
 	public boolean fire() {
+		/** TRHOW EVENT **/
+		 
 		return false;
 	}
 	
 	public boolean hasBeenHit(){
 		//TODO add time
-		System.out.println("Enemy missile "+ id +" has been destroyed by Iron Dome in time: ");
+		//System.out.println("Enemy missile "+ id +" has been destroyed by Iron Dome in time: ");
+		/** ADD EVENT **/
 		//TODO logger
 		return true;
 	}

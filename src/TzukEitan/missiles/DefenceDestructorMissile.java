@@ -3,36 +3,34 @@ package TzukEitan.missiles;
 import TzukEitan.launchers.EnemyLauncher;
 import Enemy.MissileEvent;
 
-/** missile for plane, ship and iron dome**/
+/** Missile for plane or ship **/
 public class DefenceDestructorMissile extends Thread implements MissileEvent {
-	private String id; //My id
-	private int destructTime;
+	private String id;
+	//private int destructTime;
 	private EnemyLauncher LauncherToDestroy;
 	private final int LAUNCH_DURATION = 3000;
 	
-	//TODO Edit cons't
-	public DefenceDestructorMissile(String id, int destructTime, EnemyLauncher LauncherToDestroy){
-		this.id = id;
-		this.destructTime = destructTime;
-		this.LauncherToDestroy = LauncherToDestroy;
-	}
+//	//TODO Edit cons't
+//	public DefenceDestructorMissile(String id, int destructTime, EnemyLauncher LauncherToDestroy){
+//		this.id = id;
+//		this.destructTime = destructTime;
+//		this.LauncherToDestroy = LauncherToDestroy;
+//	}
 	
 	public DefenceDestructorMissile(String id, EnemyLauncher LauncherToDestroy){
 		this.id = id;
-		this.destructTime = 0;
+		//this.destructTime = 0;
 		this.LauncherToDestroy = LauncherToDestroy;
-	}
-	
-	public int getDestructTime(){
-		return destructTime;
 	}
 
 	public void run() {
 		//TODO change this syso to event
-		System.out.println("Defence Destructor missile "+ id +" is being launch to destroy EnemyLauncher "+LauncherToDestroy.getLauncherId());
+		//System.out.println("Defence Destructor missile "+ id +" is being launch to destroy EnemyLauncher "+LauncherToDestroy.getLauncherId());
+		
 		try{
-			//Use for the XML version
-			Thread.sleep(1000 * destructTime);
+//			//Use for the XML version
+//			Thread.sleep(1000 * destructTime);
+			
 			//Launch duration
 			Thread.sleep(LAUNCH_DURATION);
 			fire();
@@ -40,6 +38,8 @@ public class DefenceDestructorMissile extends Thread implements MissileEvent {
 			if (LauncherToDestroy.isAlive()){
 				//TODO logger
 				//TODO throw event hit
+				
+				//Check if the launcher is hidden or not
 				if (!LauncherToDestroy.getIsHidden()){
 					LauncherToDestroy.interrupt();
 					hasBeenHit();

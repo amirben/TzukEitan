@@ -18,6 +18,7 @@ public class IronDome extends Thread implements MunitionsEvent {
 	public void run() {
 		synchronized (this) {
 			try{
+				//Wait until user will try to destory launcher
 				wait();
 				
 				if (toDestroy != null)
@@ -44,6 +45,7 @@ public class IronDome extends Thread implements MunitionsEvent {
 		return true;
 	}
 	
+	//Generate new ID
 	public String idGenerator(){
 		return "M" + missleIdGen++;
 	}

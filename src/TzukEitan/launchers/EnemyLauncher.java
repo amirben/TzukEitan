@@ -18,24 +18,19 @@ public class EnemyLauncher extends Thread implements MunitionsEvent{
 	private static int missleIdGen;
 	private final int LAUNCH_DURATION = 2000;
 	
-	public EnemyLauncher(String id,boolean isHidden) {
+	public EnemyLauncher(String id, boolean isHidden) {
 		this.id = id;
 		this.isHidden = isHidden;
 		firstHiddenState = isHidden;
 		missleIdGen = 100;
 	}
 
-	public void setDamage(int damage){
-		this.damage = damage;
-	}
-	public void setDestination(String dest){
-		this.destination = dest;
-	}
 	public void run() {
-		// TODO Auto-generated method stub
+		
 		while(!beenHit){
 			synchronized (this) {
 				try{
+					//Wait until user want to fire a missile
 					wait();
 					launchMissile();	
 				}	
@@ -47,6 +42,14 @@ public class EnemyLauncher extends Thread implements MunitionsEvent{
 		}
 	}
 
+	public void setDamage(int damage){
+		this.damage = damage;
+	}
+	
+	public void setDestination(String dest){
+		this.destination = dest;
+	}
+	
 	public void hasBeenHit(){
 		System.out.println("Launcher " + getId() + "has been hit");
 		beenHit = true;
@@ -79,16 +82,19 @@ public class EnemyLauncher extends Thread implements MunitionsEvent{
 		return true;
 	}
 	
+	//Create new missile
 	public EnemyMissile createMissile(){
 		String missileId = idGenerator();
 		int flyTime = (int) Math.random() * 3000;
 		EnemyMissile missile = new EnemyMissile(missileId, destination, flyTime , damage);
+		
 		return missile;
 	}
 	
 	public String idGenerator(){
-		return "M"+missleIdGen++;
+		return "M" + missleIdGen++;
 	}
+	
 	public String getLauncherId(){
 		return id;
 	}
