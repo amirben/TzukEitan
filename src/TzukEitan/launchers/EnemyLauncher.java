@@ -51,7 +51,7 @@ public class EnemyLauncher extends Thread implements MunitionsEvent{
 	}
 	
 	public void hasBeenHit(){
-		System.out.println("Launcher " + getId() + "has been hit");
+		System.out.println("Launcher " + getLauncherId() + "has been hit");
 		beenHit = true;
 		//TODO logger
 	}

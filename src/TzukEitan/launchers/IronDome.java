@@ -35,7 +35,6 @@ public class IronDome extends Thread implements MunitionsEvent {
 		this.toDestroy = toDestroy;
 	}
 	
-	@Override
 	public boolean launchMissile() {
 		String id = idGenerator();
 		DefenceMissile missile = new DefenceMissile(id ,toDestroy);
