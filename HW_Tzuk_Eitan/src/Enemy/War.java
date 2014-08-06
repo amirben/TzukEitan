@@ -59,7 +59,6 @@ public class War implements Runnable {
 		case 7:  showStatistics(); break;
 		
 		case 8:  endWar(); break;
-		
 		}
 	}
 	

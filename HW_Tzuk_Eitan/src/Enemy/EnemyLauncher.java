@@ -1,14 +1,11 @@
 package Enemy;
 
-import java.util.ArrayList;
+//TODO logger & Syso
 import java.util.Stack;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
 
 public class EnemyLauncher extends Munitions{
 	
-	ArrayList <MissileInterface> missileArray = new ArrayList<>();
 	private boolean beenHit = false;
 	private boolean isHidden;
 	private boolean firstHiddenState;

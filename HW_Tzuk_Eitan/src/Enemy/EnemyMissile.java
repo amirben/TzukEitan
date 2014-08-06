@@ -1,6 +1,6 @@
 package Enemy;
 
-import javax.swing.plaf.SliderUI;
+//TODO logger & Syso
 
 
 public class EnemyMissile extends Thread implements MissileInterface {
