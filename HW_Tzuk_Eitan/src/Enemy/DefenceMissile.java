@@ -19,7 +19,8 @@ public class DefenceMissile implements MissileInterface {
 
 	public void run() {
 		// TODO Auto-generated method stub
-		
+		Thread n = new Thread();
+		n.is
 	}
 
 	public boolean fire() {

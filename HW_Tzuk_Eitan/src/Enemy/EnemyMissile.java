@@ -60,5 +60,9 @@ public class EnemyMissile extends Thread implements MissileInterface {
 		//TODO logger
 		return true;
 	}
+	
+	public String getMissileId(){
+		return id;
+	}
 
 }

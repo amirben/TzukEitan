@@ -37,6 +37,7 @@ public class EnemyLauncher extends Munitions{
 	public void hasBeenHit(){
 		System.out.println("Launcher " + getId() + "has been hit");
 		beenHit = true;
+		
 		//TODO logger
 	}
 	
