@@ -1,9 +1,9 @@
 package TzukEitan.missiles;
 
-import Enemy.MissileEvent;
+import Enemy.MissileEventListener;
 
 /** Missile for iron dome**/
-public class DefenceMissile extends Thread implements MissileEvent {
+public class DefenceMissile extends Thread implements MissileEventListener {
 	private String id;
 	//private int destructTime;
 	private EnemyMissile missileToDestroy;
