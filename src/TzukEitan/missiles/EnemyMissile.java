@@ -1,11 +1,10 @@
 package TzukEitan.missiles;
 
-import TzukEitan.Enemy.MissileEvent;
 
 //TODO logger & Syso
 
 
-public class EnemyMissile extends Thread implements MissileEvent {
+public class EnemyMissile extends Thread {
 	
 	private String id;
 	private String destination;

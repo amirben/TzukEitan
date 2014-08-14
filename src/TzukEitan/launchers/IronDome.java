@@ -1,10 +1,9 @@
 package TzukEitan.launchers;
 
-import TzukEitan.Enemy.MunitionsEvent;
 import TzukEitan.missiles.DefenceMissile;
 import TzukEitan.missiles.EnemyMissile;
 
-public class IronDome extends Thread implements MunitionsEvent {
+public class IronDome extends Thread {
 	private EnemyMissile toDestroy;
 	private static int missleIdGen;
 	private String id;

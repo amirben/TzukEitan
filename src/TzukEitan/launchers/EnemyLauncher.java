@@ -1,12 +1,12 @@
 package TzukEitan.launchers;
 
-import TzukEitan.Enemy.MunitionsEvent;
+
 import TzukEitan.missiles.EnemyMissile;
 
 //TODO logger & Syso
 
 
-public class EnemyLauncher extends Thread implements MunitionsEvent{
+public class EnemyLauncher extends Thread {
 	
 	private boolean beenHit = false;
 	private boolean isHidden;

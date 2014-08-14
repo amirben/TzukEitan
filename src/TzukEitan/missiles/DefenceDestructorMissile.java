@@ -1,10 +1,9 @@
 package TzukEitan.missiles;
 
-import TzukEitan.Enemy.MissileEvent;
 import TzukEitan.launchers.EnemyLauncher;
 
 /** Missile for plane or ship **/
-public class DefenceDestructorMissile extends Thread implements MissileEvent {
+public class DefenceDestructorMissile extends Thread {
 	private String id;
 	//private int destructTime;
 	private EnemyLauncher LauncherToDestroy;
@@ -71,5 +70,5 @@ public class DefenceDestructorMissile extends Thread implements MissileEvent {
 		//event
 		return false;
 	}
-	
+
 }

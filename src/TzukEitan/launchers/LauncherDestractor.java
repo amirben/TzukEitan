@@ -1,10 +1,8 @@
 package TzukEitan.launchers;
 
-import TzukEitan.Enemy.MunitionsEvent;
-
 
 /** plane or ship**/
-public class LauncherDestractor extends Thread implements MunitionsEvent {
+public class LauncherDestractor extends Thread {
 	private String type; //plane or ship
 	private EnemyLauncher toDestroy;
 	private String id;
