@@ -2,6 +2,7 @@ package TzukEitan.launchers;
 
 
 import TzukEitan.missiles.EnemyMissile;
+import TzukEitan.war.WarControl;
 
 //TODO logger & Syso
 
@@ -17,12 +18,14 @@ public class EnemyLauncher extends Thread {
 	private EnemyMissile currentMissile;
 	private static int missleIdGen;
 	private final int LAUNCH_DURATION = 2000;
-	
-	public EnemyLauncher(String id, boolean isHidden) {
+	private WarControl control;
+    	
+	public EnemyLauncher(String id, boolean isHidden, WarControl control) {
 		this.id = id;
 		this.isHidden = isHidden;
 		firstHiddenState = isHidden;
 		missleIdGen = 100;
+		this.control = control;
 	}
 
 	public void run() {
@@ -58,6 +61,7 @@ public class EnemyLauncher extends Thread {
 	
 	public boolean launchMissile(){
 		//TODO logger
+		control.
 		currentMissile = createMissile();
 		try {
 			//Missle isn't hide when launch missile

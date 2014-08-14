@@ -7,8 +7,14 @@ public class WarControl implements MissileEventListener,MunitionsEventListener{
 
 	private War warModel;
 	private ConsoleView view;
+	private WarStatistics stat;
 	
-	public warControl(War warModel,)
+	public WarControl(War warModel, ConsoleView view, WarStatistics stat){
+		this.warModel = warModel;
+		this.view = view;
+		this.stat = stat;
+	}
+	
 	@Override
 	public void defenceLaunchMissile(String id) {
 		// TODO Auto-generated method stub
