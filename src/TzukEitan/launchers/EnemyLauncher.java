@@ -1,6 +1,6 @@
 package TzukEitan.launchers;
 
-import Enemy.MunitionsEvent;
+import TzukEitan.Enemy.MunitionsEvent;
 import TzukEitan.missiles.EnemyMissile;
 
 //TODO logger & Syso
@@ -68,7 +68,7 @@ public class EnemyLauncher extends Thread implements MunitionsEvent{
 			currentMissile.start();
 			
 			//X time that the launcher is not hidden:
-			int x = (int) Math.random() * 1000;
+			int x = (int) Math.random() * 5000;
 			sleep(x);
 			isHidden = firstHiddenState;
 			

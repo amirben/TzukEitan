@@ -1,4 +1,4 @@
-package Enemy;
+package TzukEitan.Enemy;
 
 import java.util.ArrayList;
 import java.util.Scanner;

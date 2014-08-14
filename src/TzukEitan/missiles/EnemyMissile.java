@@ -1,6 +1,6 @@
 package TzukEitan.missiles;
 
-import Enemy.MissileEvent;
+import TzukEitan.Enemy.MissileEvent;
 
 //TODO logger & Syso
 

@@ -1,4 +1,4 @@
-package Enemy;
+package TzukEitan.Enemy;
 
 public class TzukEitan {
 

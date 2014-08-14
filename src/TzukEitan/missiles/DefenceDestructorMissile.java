@@ -1,7 +1,7 @@
 package TzukEitan.missiles;
 
+import TzukEitan.Enemy.MissileEvent;
 import TzukEitan.launchers.EnemyLauncher;
-import Enemy.MissileEvent;
 
 /** Missile for plane or ship **/
 public class DefenceDestructorMissile extends Thread implements MissileEvent {

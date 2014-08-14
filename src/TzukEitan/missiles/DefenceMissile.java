@@ -1,6 +1,6 @@
 package TzukEitan.missiles;
 
-import Enemy.MissileEventListener;
+import TzukEitan.Enemy.MissileEventListener;
 
 /** Missile for iron dome**/
 public class DefenceMissile extends Thread implements MissileEventListener {
