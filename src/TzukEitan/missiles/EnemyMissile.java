@@ -1,75 +1,58 @@
 package TzukEitan.missiles;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import TzukEitan.enemy.WarEventListener;
+
 
 //TODO logger & Syso
 
 
 public class EnemyMissile extends Thread {
+	private List<WarEventListener> allListeners;
 	
 	private String id;
+	private String whoLaunchedMeId;
 	private String destination;
-	//private int launchTime;
 	private int flyTime;
 	private int damage;
 	
-	//TODO Edit Cons't
-//	public EnemyMissile(String id, String destination,int launchTime, int flyTime,int damage){
-//		this.id = id;
-//		this.destination = destination;
-//		this.launchTime = launchTime;
-//		this.flyTime = flyTime;
-//		this.damage = damage;
-//	}
-	
-	public EnemyMissile (String id, String destination, int flyTime, int damage){
+	public EnemyMissile (String id, String destination, int flyTime, int damage, String whoLaunchedMeId, List<WarEventListener> allListeners){
+		allListeners = new LinkedList<WarEventListener>();
+		
 		this.id = id;
 		this.destination = destination;
-		//this.launchTime = 0;
 		this.flyTime = flyTime;
 		this.damage = damage;
+		this.whoLaunchedMeId = whoLaunchedMeId;
+		this.allListeners = allListeners;
 	}
 	
 	public void run() {
-		//System.out.println("Enemy missile "+ id +" is being launch to "+destination);
-		/**THROW EVENT!!! **/
-		
+		//NEED to fire event that start flying, if success 
+		//throw event of succes!!!
 		try{
-			//TODO logger
+			fireHitEvent();	
 			Thread.sleep(flyTime * 1000);
-			damageDestination();
-			
 		//Interrupt is thrown when Enemy missile has been hit. 
 		}catch(InterruptedException ex){
-			hasBeenHit();
-			//TODO add logger
-			
-		}catch(Exception ex){
-			System.out.println("Thred.sleep in EnemyMissile EROR");
-			//TODO add logger
+			//this event was already being thrown by the missile who hit this missile.
+		}
+		
+		
+	}
+		
+	public void fireHitEvent(){
+		for (WarEventListener l : allListeners) {
+			l.enemyHitDestination(whoLaunchedMeId, id, destination, damage);
 		}
 	}
 	
-	public void damageDestination( ){
-		//System.out.println("Enemy missile: " + id + " hit the destination: " + destination);
-		/** THROW EVENT **/
-		//TODO logger
+	public void registerListeners(WarEventListener listener){
+		allListeners.add(listener);
 	}
 
-
-	public boolean fire() {
-		/** TRHOW EVENT **/
-		 
-		return false;
-	}
-	
-	public boolean hasBeenHit(){
-		//TODO add time
-		//System.out.println("Enemy missile "+ id +" has been destroyed by Iron Dome in time: ");
-		/** ADD EVENT **/
-		//TODO logger
-		return true;
-	}
-	
 	public String getMissileId(){
 		return id;
 	}

@@ -1,29 +1,44 @@
 package TzukEitan.launchers;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import TzukEitan.enemy.WarEventListener;
+import TzukEitan.missiles.DefenceDestructorMissile;
+import TzukEitan.missiles.DefenceMissile;
+
 
 /** plane or ship**/
 public class LauncherDestractor extends Thread {
+	private List<WarEventListener> allListeners;
+	
 	private String type; //plane or ship
+	private boolean isRunning = true;
 	private EnemyLauncher toDestroy;
+	private static int missleIdGen = 100;
 	private String id;
 	
 	public LauncherDestractor(String type, String id){
+		allListeners = new LinkedList<WarEventListener>();
+		
 		this.id = id;
 		this.type = type;	
 	}
 	
 	public void run() {
-		synchronized (this) {
-			try{
-				//Wait until user try to destory missile
-				wait();
-				
-				if (toDestroy != null)
-					launchMissile();	
-			}	
-			//Exception is called when launcher has been hit
-			catch(InterruptedException ex){
-				//TODO something
+		while (!isRunning){
+			synchronized (this) {
+				try{
+					//Wait until user try to destory missile
+					wait();
+					
+					if (toDestroy != null)
+						launchMissile();	
+				}	
+				//Exception is called when launcher has been hit
+				catch(InterruptedException ex){
+					//TODO something
+				}
 			}
 		}
 	}
@@ -33,11 +48,32 @@ public class LauncherDestractor extends Thread {
 	}
 
 	public boolean launchMissile() {
-		// TODO Auto-generated method stub
-		/** ADD EVENT **/
-		return false;
+		String MissileId = idGenerator();
+		DefenceDestructorMissile missile = new DefenceDestructorMissile(MissileId, toDestroy, id, type, allListeners);
+		
+		fireLaunchMissileEvent(missile.getMissileId());
+		missile.start();
+		
+		return true;
 	}
-
+	
+	public void fireLaunchMissileEvent(String missileId){
+		for (WarEventListener l : allListeners) {
+			l.defenseLaunchMissile(id, type, missileId, toDestroy.getLauncherId());
+		}
+	}
+	
+	public void registerListeners(WarEventListener listener){
+		allListeners.add(listener);
+	}
+	
+	public String idGenerator(){
+		return "L" + missleIdGen++;
+	}
+	
+	public void stopRunningDestractor(){
+		isRunning = false;
+	}
 }
 
 //class MissileComparator implements Comparator<MissileInterface>{

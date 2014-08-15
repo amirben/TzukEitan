@@ -1,70 +1,69 @@
 package TzukEitan.missiles;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import TzukEitan.enemy.WarEventListener;
+
 /** Missile for iron dome**/
 public class DefenceMissile extends Thread {
+	private List<WarEventListener> allListeners;
+	
 	private String id;
-	//private int destructTime;
+	private String whoLunchedMeId;
 	private EnemyMissile missileToDestroy;
 	private final int LAUNCH_DURATION = 2000;
 	
-//	//TODO Edit cons't
-//	public DefenceMissile(String id, int destructTime, EnemyMissile missileToDestroy){
-//		this.id = id;
-//		this.destructTime = destructTime;
-//		this.missileToDestroy = missileToDestroy;
-//	}
-	
-	public DefenceMissile(String id, EnemyMissile missileToDestroy){
+	public DefenceMissile(String id, EnemyMissile missileToDestroy, String whoLunchedMeId, List<WarEventListener> allListeners){
+		allListeners = new LinkedList<WarEventListener>();
 		this.id = id;
-	//	this.destructTime = 0;
 		this.missileToDestroy = missileToDestroy;
+		this.whoLunchedMeId = whoLunchedMeId;
+		this.allListeners = allListeners;
 	}
 
 	public void run() {
-		//TODO change this syso to event
-		//System.out.println("Defence missile "+ id +" is being launch to destroy missile "+missileToDestroy.getMissileId());
-		/** ADD EVENT!! **/
 		try{
-			//Use for the XML version
-			//Thread.sleep(1000 * destructTime);
-			
 			//Launch duration
 			Thread.sleep(LAUNCH_DURATION);
-			fire();
 			
-			//Check if the missile is still in the air before trying to destory
-			if (missileToDestroy.isAlive()){
-				//TODO logger
-				//TODO throw event hit
-				missileToDestroy.interrupt();
-				hasBeenHit();
-			}
-			else{
-				//TODO throw event not hit
-				/**THROW EVENT!!! **/
+			//Check if the missile is still in the air before trying to destroy
+			synchronized (this) {
+				if (missileToDestroy.isAlive()){
+					missileToDestroy.interrupt();
+					fireHitEvent();
+				}
+				else{
+					fireMissEvent();
+				}
 			}
 			
-		//Interrupt is thrown when Enemy missile has been hit. 
 		}catch(InterruptedException ex){
-			hasBeenHit();
 			//TODO add logger
-			
-		}catch(Exception ex){
 			System.out.println("Thred.sleep in EnemyMissile EROR");
-			//TODO add logger
 		}
 	}
-
-	public boolean fire() {
-		// TODO Auto-generated method stub
-		//Create event fire
-		return false;
+	
+	public String getMissileId(){
+		return id;
 	}
 
-	public boolean hasBeenHit() {
-		// TODO Auto-generated method stub
-		//event
-		return false;
+	public void fireHitEvent(){
+		for (WarEventListener l : allListeners) {
+			l.defenseHitInterceptionMissile(whoLunchedMeId, id, missileToDestroy.getMissileId());
+		}
 	}
+	
+	public void fireMissEvent(){
+		for (WarEventListener l : allListeners) {
+			l.defenseMissInterceptionMissile(whoLunchedMeId, id, missileToDestroy.getMissileId());
+		}
+	}
+	
+	public void registerListeners(WarEventListener listener){
+		allListeners.add(listener);
+	}
+
+
 	
 }

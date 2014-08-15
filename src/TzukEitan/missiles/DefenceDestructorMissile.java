@@ -1,74 +1,73 @@
 package TzukEitan.missiles;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import TzukEitan.enemy.WarEventListener;
 import TzukEitan.launchers.EnemyLauncher;
 
 /** Missile for plane or ship **/
 public class DefenceDestructorMissile extends Thread {
+	private List<WarEventListener> allListeners;
+	
 	private String id;
-	//private int destructTime;
+	private String whoLaunchedMeId;
+	private String whoLaunchedMeType;
 	private EnemyLauncher LauncherToDestroy;
 	private final int LAUNCH_DURATION = 3000;
 	
-//	//TODO Edit cons't
-//	public DefenceDestructorMissile(String id, int destructTime, EnemyLauncher LauncherToDestroy){
-//		this.id = id;
-//		this.destructTime = destructTime;
-//		this.LauncherToDestroy = LauncherToDestroy;
-//	}
-	
-	public DefenceDestructorMissile(String id, EnemyLauncher LauncherToDestroy){
+	public DefenceDestructorMissile(String id, EnemyLauncher LauncherToDestroy, String whoLunchedMeId, String whoLaunchedMeType, List<WarEventListener> allListeners ){
+		allListeners = new LinkedList<WarEventListener>(); 
+		
 		this.id = id;
 		//this.destructTime = 0;
 		this.LauncherToDestroy = LauncherToDestroy;
+		this.whoLaunchedMeId = whoLunchedMeId;
+		this.whoLaunchedMeType = whoLaunchedMeType;
+		this.allListeners = allListeners;
 	}
 
 	public void run() {
-		//TODO change this syso to event
-		//System.out.println("Defence Destructor missile "+ id +" is being launch to destroy EnemyLauncher "+LauncherToDestroy.getLauncherId());
 		
-		try{
-//			//Use for the XML version
-//			Thread.sleep(1000 * destructTime);
-			
+		try{			
 			//Launch duration
 			Thread.sleep(LAUNCH_DURATION);
-			fire();
-			
-			if (LauncherToDestroy.isAlive()){
-				//TODO logger
-				//TODO throw event hit
-				
-				//Check if the launcher is hidden or not
-				if (!LauncherToDestroy.getIsHidden()){
-					LauncherToDestroy.interrupt();
-					hasBeenHit();
+			synchronized (this) {
+				if (LauncherToDestroy.isAlive()){
+					//Check if the launcher is hidden or not
+					if (!LauncherToDestroy.getIsHidden()){
+						LauncherToDestroy.interrupt();
+						fireHitEvent();
+					}
+				}
+				else{
+					fireMissEvent();
 				}
 			}
-			else{
-				//TODO throw event not hit
-			}
 			
-		//Interrupt is thrown when Enemy missile has been hit. 
 		}catch(InterruptedException ex){
-			hasBeenHit();
-			//TODO add logger
-			
-		}catch(Exception ex){
-			System.out.println("Thred.sleep in EnemyMissile EROR");
-			//TODO add logger
+			System.out.println("Thred.sleep in defence destructor missile EROR");
 		}
 	}
 
-	public boolean fire() {
-		// TODO Auto-generated method stub
-		//Create event fire
-		return false;
+	public void fireHitEvent(){
+		for (WarEventListener l : allListeners) {
+			l.defenseHitInterceptionLauncher(whoLaunchedMeId, whoLaunchedMeType, id, LauncherToDestroy.getLauncherId());
+		}
 	}
-
-	public boolean hasBeenHit() {
-		// TODO Auto-generated method stub
-		//event
-		return false;
+	
+	public void fireMissEvent(){
+		for (WarEventListener l : allListeners) {
+			l.defenseMissInterceptionLauncher(whoLaunchedMeId, whoLaunchedMeType, id, LauncherToDestroy.getLauncherId());
+		}
+	}
+	
+	public void registerListeners(WarEventListener listener){
+		allListeners.add(listener);
+	}
+	
+	public String getMissileId(){
+		return id;
 	}
 
 }

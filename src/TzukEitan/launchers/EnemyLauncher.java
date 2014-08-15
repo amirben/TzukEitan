@@ -1,6 +1,10 @@
 package TzukEitan.launchers;
 
 
+import java.util.LinkedList;
+import java.util.List;
+
+import TzukEitan.enemy.WarEventListener;
 import TzukEitan.missiles.EnemyMissile;
 import TzukEitan.war.WarControl;
 
@@ -8,6 +12,7 @@ import TzukEitan.war.WarControl;
 
 
 public class EnemyLauncher extends Thread {
+	private List<WarEventListener> allListeners;
 	
 	private boolean beenHit = false;
 	private boolean isHidden;
@@ -21,6 +26,7 @@ public class EnemyLauncher extends Thread {
 	private WarControl control;
     	
 	public EnemyLauncher(String id, boolean isHidden, WarControl control) {
+		allListeners = new LinkedList<WarEventListener>(); 
 		this.id = id;
 		this.isHidden = isHidden;
 		firstHiddenState = isHidden;
@@ -39,7 +45,9 @@ public class EnemyLauncher extends Thread {
 				}	
 				//Exception is called when launcher has been hit
 				catch(InterruptedException ex){
-					hasBeenHit();
+					beenHit = true;
+					//firehasBeenHitEvent();
+					//not needed because the DefenseDestructorMissile call this event
 				}
 			}	
 		}
@@ -53,44 +61,45 @@ public class EnemyLauncher extends Thread {
 		this.destination = dest;
 	}
 	
-	public void hasBeenHit(){
-		System.out.println("Launcher " + getLauncherId() + "has been hit");
-		beenHit = true;
+	public boolean launchMissile() throws InterruptedException{
 		//TODO logger
+		
+		currentMissile = createMissile();
+		
+		fireLaunchMissileEvent(currentMissile.getMissileId());
+		
+		//Missile isn't hiding when launching a missile
+		isHidden = false;
+		
+		//It's take time to launch missile
+		sleep(LAUNCH_DURATION);
+		currentMissile.start();
+		
+		//X time that the launcher is not hidden:
+		int x = (int) Math.random() * 5000;
+		sleep(x);
+		isHidden = firstHiddenState;
+		
+		currentMissile.join();	
+
+		return true;
 	}
 	
-	public boolean launchMissile(){
-		//TODO logger
-		control.
-		currentMissile = createMissile();
-		try {
-			//Missle isn't hide when launch missile
-			isHidden = false;
-			
-			//It's take time to launch missile
-			sleep(LAUNCH_DURATION);
-			currentMissile.start();
-			
-			//X time that the launcher is not hidden:
-			int x = (int) Math.random() * 5000;
-			sleep(x);
-			isHidden = firstHiddenState;
-			
-			currentMissile.join();
-			
-		} catch (InterruptedException e) {
-			//if we are here then while the missile is in the air we have been hit
-			hasBeenHit();
-			return false;
+	public void fireLaunchMissileEvent(String missileId){
+		for (WarEventListener l : allListeners) {
+			l.enemyLaunchMissile(id, missileId, destination, damage);
 		}
-		return true;
+	}
+	
+	public void registerListeners(WarEventListener listener){
+		allListeners.add(listener);
 	}
 	
 	//Create new missile
 	public EnemyMissile createMissile(){
 		String missileId = idGenerator();
 		int flyTime = (int) Math.random() * 3000;
-		EnemyMissile missile = new EnemyMissile(missileId, destination, flyTime , damage);
+		EnemyMissile missile = new EnemyMissile(missileId, destination, flyTime , damage, id, allListeners);
 		
 		return missile;
 	}
