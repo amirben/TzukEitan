@@ -2,7 +2,6 @@ package TzukEitan.missiles;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import TzukEitan.listeners.WarEventListener;
 import TzukEitan.war.WarStatistics;
 
