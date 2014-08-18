@@ -17,6 +17,7 @@ public class EnemyMissile extends Thread {
 	private String destination;
 	private int flyTime;
 	private int damage;
+	private boolean beenHit = false;
 	
 	public EnemyMissile (String id, String destination, int flyTime, int damage, String whoLaunchedMeId, List<WarEventListener> allListeners){
 		allListeners = new LinkedList<WarEventListener>();
@@ -33,13 +34,16 @@ public class EnemyMissile extends Thread {
 		//NEED to fire event that start flying, if success 
 		//throw event of succes!!!
 		try{
-			fireHitEvent();	
 			Thread.sleep(flyTime * 1000);
+			//fireHitEvent();
+			
 		//Interrupt is thrown when Enemy missile has been hit. 
 		}catch(InterruptedException ex){
 			//this event was already being thrown by the missile who hit this missile.
+			beenHit = true;
 		}
-		
+		if (beenHit)
+			fireHitEvent();
 		
 	}
 		
