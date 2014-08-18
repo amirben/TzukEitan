@@ -6,6 +6,7 @@ import java.util.List;
 import TzukEitan.enemy.WarEventListener;
 import TzukEitan.missiles.DefenceMissile;
 import TzukEitan.missiles.EnemyMissile;
+import TzukEitan.war.WarStatistics;
 
 public class IronDome extends Thread {
 	private List<WarEventListener> allListeners;
@@ -13,12 +14,14 @@ public class IronDome extends Thread {
 	private EnemyMissile toDestroy;
 	private static int missleIdGen;
 	private String id;
+	private WarStatistics statistics;
 	private boolean isRunning = true;
 	
-	public IronDome(String id) {
+	public IronDome(String id, WarStatistics statistics) {
 		allListeners = new LinkedList<WarEventListener>(); 
 		this.id = id;
 		missleIdGen = 100;
+		this.statistics = statistics;
 	}
 
 	public void run() {
@@ -46,7 +49,7 @@ public class IronDome extends Thread {
 	
 	public boolean launchMissile() {
 		String missieId = idGenerator();
-		DefenceMissile missile = new DefenceMissile(missieId , toDestroy, id, allListeners);
+		DefenceMissile missile = new DefenceMissile(missieId , toDestroy, id, allListeners, statistics);
 		
 		fireLaunchMissileEvent(missile.getMissileId());
 		missile.start();

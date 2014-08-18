@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import TzukEitan.enemy.WarEventListener;
+import TzukEitan.war.WarStatistics;
 
 
 //TODO logger & Syso
@@ -17,9 +18,10 @@ public class EnemyMissile extends Thread {
 	private String destination;
 	private int flyTime;
 	private int damage;
+	private WarStatistics statistics;
 	private boolean beenHit = false;
 	
-	public EnemyMissile (String id, String destination, int flyTime, int damage, String whoLaunchedMeId, List<WarEventListener> allListeners){
+	public EnemyMissile (String id, String destination, int flyTime, int damage, String whoLaunchedMeId, List<WarEventListener> allListeners, WarStatistics statistics){
 		allListeners = new LinkedList<WarEventListener>();
 		
 		this.id = id;
@@ -28,6 +30,7 @@ public class EnemyMissile extends Thread {
 		this.damage = damage;
 		this.whoLaunchedMeId = whoLaunchedMeId;
 		this.allListeners = allListeners;
+		this.statistics = statistics;
 	}
 	
 	public void run() {
@@ -51,6 +54,8 @@ public class EnemyMissile extends Thread {
 		for (WarEventListener l : allListeners) {
 			l.enemyHitDestination(whoLaunchedMeId, id, destination, damage);
 		}
+		statistics.increaseNumOfHitTargetMissiles();
+		statistics.increaseTotalDamage(damage);
 	}
 	
 	public void registerListeners(WarEventListener listener){

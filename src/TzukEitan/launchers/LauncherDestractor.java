@@ -6,6 +6,7 @@ import java.util.List;
 import TzukEitan.enemy.WarEventListener;
 import TzukEitan.missiles.DefenceDestructorMissile;
 import TzukEitan.missiles.DefenceMissile;
+import TzukEitan.war.WarStatistics;
 
 
 /** plane or ship**/
@@ -17,12 +18,14 @@ public class LauncherDestractor extends Thread {
 	private EnemyLauncher toDestroy;
 	private static int missleIdGen = 100;
 	private String id;
+	private WarStatistics statistics;
 	
-	public LauncherDestractor(String type, String id){
+	public LauncherDestractor(String type, String id, WarStatistics statistics){
 		allListeners = new LinkedList<WarEventListener>();
 		
 		this.id = id;
 		this.type = type;	
+		this.statistics = statistics;
 	}
 	
 	public void run() {
@@ -49,7 +52,7 @@ public class LauncherDestractor extends Thread {
 
 	public boolean launchMissile() {
 		String MissileId = idGenerator();
-		DefenceDestructorMissile missile = new DefenceDestructorMissile(MissileId, toDestroy, id, type, allListeners);
+		DefenceDestructorMissile missile = new DefenceDestructorMissile(MissileId, toDestroy, id, type, allListeners, statistics);
 		
 		fireLaunchMissileEvent(missile.getMissileId());
 		missile.start();
