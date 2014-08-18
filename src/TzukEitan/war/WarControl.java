@@ -1,10 +1,11 @@
 package TzukEitan.war;
 
 import TzukEitan.listeners.WarEventListener;
+import TzukEitan.listeners.WarEventUIListener;
 import TzukEitan.view.ConsoleView;
 
 
-public class WarControl implements WarEventListener{
+public class WarControl implements WarEventListener, WarEventUIListener{
 
 	private War warModel;
 	private ConsoleView view;
@@ -29,12 +30,13 @@ public class WarControl implements WarEventListener{
 
 	@Override
 	public void enemyLaunchMissile(String myMunitionsId, String missileId, String destination, int damage) {
-		view.showEnemyLaunchMissie(myMunitionsId, missileId, destination, damage);	
+		view.showEnemyLaunchMissile(myMunitionsId, missileId, destination, damage);	
 	}
 
 	@Override
 	public void enemyLauncherIsHidden(String id) {
 		view.showLauncherIsHidden(id);
+		
 	}
 
 	@Override
