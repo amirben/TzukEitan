@@ -3,8 +3,9 @@ package TzukEitan.missiles;
 import java.util.LinkedList;
 import java.util.List;
 
-import TzukEitan.enemy.WarEventListener;
+import TzukEitan.listeners.WarEventListener;
 import TzukEitan.launchers.EnemyLauncher;
+import TzukEitan.war.WarStatistics;
 
 /** Missile for plane or ship **/
 public class DefenceDestructorMissile extends Thread {
@@ -14,9 +15,10 @@ public class DefenceDestructorMissile extends Thread {
 	private String whoLaunchedMeId;
 	private String whoLaunchedMeType;
 	private EnemyLauncher LauncherToDestroy;
+	private WarStatistics statistics;
 	private final int LAUNCH_DURATION = 3000;
 	
-	public DefenceDestructorMissile(String id, EnemyLauncher LauncherToDestroy, String whoLunchedMeId, String whoLaunchedMeType, List<WarEventListener> allListeners ){
+	public DefenceDestructorMissile(String id, EnemyLauncher LauncherToDestroy, String whoLunchedMeId, String whoLaunchedMeType, List<WarEventListener> allListeners, WarStatistics statistics ){
 		allListeners = new LinkedList<WarEventListener>(); 
 		
 		this.id = id;
@@ -25,6 +27,8 @@ public class DefenceDestructorMissile extends Thread {
 		this.whoLaunchedMeId = whoLunchedMeId;
 		this.whoLaunchedMeType = whoLaunchedMeType;
 		this.allListeners = allListeners;
+		this.statistics = statistics;
+
 	}
 
 	public void run() {
@@ -54,6 +58,7 @@ public class DefenceDestructorMissile extends Thread {
 		for (WarEventListener l : allListeners) {
 			l.defenseHitInterceptionLauncher(whoLaunchedMeId, whoLaunchedMeType, id, LauncherToDestroy.getLauncherId());
 		}
+		statistics.increaseNumOfLauncherDestroyed();
 	}
 	
 	public void fireMissEvent(){

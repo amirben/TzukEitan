@@ -4,9 +4,10 @@ package TzukEitan.launchers;
 import java.util.LinkedList;
 import java.util.List;
 
-import TzukEitan.enemy.WarEventListener;
+import TzukEitan.listeners.WarEventListener;
 import TzukEitan.missiles.EnemyMissile;
 import TzukEitan.war.WarControl;
+import TzukEitan.war.WarStatistics;
 
 //TODO logger & Syso
 
@@ -21,17 +22,19 @@ public class EnemyLauncher extends Thread {
 	private String destination;
 	private int damage;
 	private EnemyMissile currentMissile;
+	private WarStatistics statistics;
 	private static int missleIdGen;
 	private final int LAUNCH_DURATION = 2000;
 	private WarControl control;
     	
-	public EnemyLauncher(String id, boolean isHidden, WarControl control) {
+	public EnemyLauncher(String id, boolean isHidden, WarControl control, WarStatistics statistics) {
 		allListeners = new LinkedList<WarEventListener>(); 
 		this.id = id;
 		this.isHidden = isHidden;
 		firstHiddenState = isHidden;
 		missleIdGen = 100;
 		this.control = control;
+		this.statistics = statistics;
 	}
 
 	public void run() {
@@ -89,6 +92,7 @@ public class EnemyLauncher extends Thread {
 		for (WarEventListener l : allListeners) {
 			l.enemyLaunchMissile(id, missileId, destination, damage);
 		}
+		statistics.increaseNumOfLaunchMissiles();
 	}
 	
 	public void registerListeners(WarEventListener listener){
@@ -99,7 +103,7 @@ public class EnemyLauncher extends Thread {
 	public EnemyMissile createMissile(){
 		String missileId = idGenerator();
 		int flyTime = (int) Math.random() * 3000;
-		EnemyMissile missile = new EnemyMissile(missileId, destination, flyTime , damage, id, allListeners);
+		EnemyMissile missile = new EnemyMissile(missileId, destination, flyTime , damage, id, allListeners, statistics);
 		
 		return missile;
 	}

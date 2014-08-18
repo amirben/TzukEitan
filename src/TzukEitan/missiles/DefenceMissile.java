@@ -3,7 +3,8 @@ package TzukEitan.missiles;
 import java.util.LinkedList;
 import java.util.List;
 
-import TzukEitan.enemy.WarEventListener;
+import TzukEitan.listeners.WarEventListener;
+import TzukEitan.war.WarStatistics;
 
 /** Missile for iron dome**/
 public class DefenceMissile extends Thread {
@@ -12,14 +13,16 @@ public class DefenceMissile extends Thread {
 	private String id;
 	private String whoLunchedMeId;
 	private EnemyMissile missileToDestroy;
+	private WarStatistics statistics;
 	private final int LAUNCH_DURATION = 2000;
 	
-	public DefenceMissile(String id, EnemyMissile missileToDestroy, String whoLunchedMeId, List<WarEventListener> allListeners){
+	public DefenceMissile(String id, EnemyMissile missileToDestroy, String whoLunchedMeId, List<WarEventListener> allListeners, WarStatistics statistics){
 		allListeners = new LinkedList<WarEventListener>();
 		this.id = id;
 		this.missileToDestroy = missileToDestroy;
 		this.whoLunchedMeId = whoLunchedMeId;
 		this.allListeners = allListeners;
+		this.statistics = statistics;
 	}
 
 	public void run() {
@@ -52,6 +55,8 @@ public class DefenceMissile extends Thread {
 		for (WarEventListener l : allListeners) {
 			l.defenseHitInterceptionMissile(whoLunchedMeId, id, missileToDestroy.getMissileId());
 		}
+		statistics.increaseNumOfInterceptMissiles();
+		
 	}
 	
 	public void fireMissEvent(){

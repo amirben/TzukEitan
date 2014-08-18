@@ -1,4 +1,4 @@
-package TzukEitan.enemy;
+package TzukEitan.listeners;
 
 public interface WarEventListener {
 

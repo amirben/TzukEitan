@@ -1,4 +1,4 @@
-package TzukEitan.enemy;
+package TzukEitan.view;
 
 public class TzukEitan {
 

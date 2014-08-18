@@ -1,18 +1,17 @@
 package TzukEitan.war;
 
-import TzukEitan.enemy.WarEventListener;
+import TzukEitan.listeners.WarEventListener;
+import TzukEitan.view.ConsoleView;
 
 
 public class WarControl implements WarEventListener{
 
 	private War warModel;
 	private ConsoleView view;
-	private WarStatistics statistics;
 	
-	public WarControl(War warModel, ConsoleView view, WarStatistics statistics){
+	public WarControl(War warModel, ConsoleView view){
 		this.warModel = warModel;
 		this.view = view;
-		this.statistics = statistics;
 		
 		warModel.registerListenerts(this);
 		view.registerListeners(this);
@@ -30,55 +29,42 @@ public class WarControl implements WarEventListener{
 
 	@Override
 	public void enemyLaunchMissile(String myMunitionsId, String missileId, String destination, int damage) {
-		// TODO Auto-generated method stub
-		
+		view.showEnemyLaunchMissie(myMunitionsId, missileId, destination, damage);	
 	}
 
 	@Override
 	public void enemyLauncherIsHidden(String id) {
-		// TODO Auto-generated method stub
-		
+		view.showLauncherIsHidden(id);
 	}
 
 	@Override
 	public void enemyLauncherIsVisible(String id) {
-		// TODO Auto-generated method stub
-		
+		view.showLauncherIsVisible(id);
 	}
 
 	@Override
-	public void defenseMissInterceptionMissile(String whoLunchedMeId,
-			String id, String enemyMissileId) {
-		// TODO Auto-generated method stub
-		
+	public void defenseMissInterceptionMissile(String whoLaunchedMeId, String missileId, String enemyMissileId) {
+		view.showMissInterceptionMissile(whoLaunchedMeId, missileId, enemyMissileId);
 	}
 
 	@Override
-	public void defenseHitInterceptionMissile(String whoLaunchedMeId, String id,
-			String enemyMissileId) {
-		// TODO Auto-generated method stub
-		
+	public void defenseHitInterceptionMissile(String whoLaunchedMeId, String missileId, String enemyMissileId) {
+		view.showHitInterceptionMissile(whoLaunchedMeId, missileId, enemyMissileId);
 	}
 
 	@Override
-	public void enemyHitDestination(String whoLaunchedMeId, String id,
-			String destination, int damage) {
-		// TODO Auto-generated method stub
-		
+	public void enemyHitDestination(String whoLaunchedMeId, String missileId, String destination, int damage) {
+		view.showEnemyHitDestination(whoLaunchedMeId, missileId, destination, damage);
 	}
 
 	@Override
-	public void defenseMissInterceptionLauncher(String whoLaunchedMeId,
-			String Type, String id, String enemyLauncherId) {
-		// TODO Auto-generated method stub
-		
+	public void defenseMissInterceptionLauncher(String whoLaunchedMeId,	String type, String missileId, String enemyLauncherId) {
+		view.showMissInterceptionLauncher(whoLaunchedMeId,type, enemyLauncherId, missileId);
 	}
 
 	@Override
-	public void defenseHitInterceptionLauncher(String whoLaunchedMeId,
-			String Type, String id, String enemyLauncherId) {
-		// TODO Auto-generated method stub
-		
+	public void defenseHitInterceptionLauncher(String whoLaunchedMeId, String type, String missileId, String enemyLauncherId) {
+		view.showHitInterceptionLauncher(whoLaunchedMeId, type, enemyLauncherId, missileId);
 	}
 
 
