@@ -38,6 +38,9 @@ public interface WarEventUIListener {
 	public void addDefenseLauncherDestractor(String type);
 
 	/**Add defense Iron Dome from xml**/
-	void addIronDome(String id);
+	public void addIronDome(String id);
+	
+	/**Returns all war city targets**/
+	public String[] getAllWarDestinations();
 }
 

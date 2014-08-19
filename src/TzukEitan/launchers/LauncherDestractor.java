@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import TzukEitan.listeners.WarEventListener;
 import TzukEitan.missiles.DefenceDestructorMissile;
 import TzukEitan.missiles.DefenceMissile;
+import TzukEitan.utils.IdGenerator;
 import TzukEitan.utils.Utils;
 import TzukEitan.utils.WarFormater;
 import TzukEitan.war.WarStatistics;
@@ -23,14 +24,13 @@ public class LauncherDestractor extends Thread {
 	private String type; //plane or ship
 	private boolean isRunning = true;
 	private EnemyLauncher toDestroy;
-	private static int missleIdGen = 100;
 	private String id;
 	private WarStatistics statistics;
 	private static Logger theLogger = Logger.getLogger("warLogger");
 	private boolean isBusy = false;
 
 	
-	public LauncherDestractor(String type, String id, WarStatistics statistics) throws IOException{
+	public LauncherDestractor(String type, String id, WarStatistics statistics){
 		allListeners = new LinkedList<WarEventListener>();
 		
 		this.id = id;
@@ -46,7 +46,7 @@ public class LauncherDestractor extends Thread {
 				try{
 					//Wait until user try to destory missile
 					wait();
-					
+					isBusy = true;
 					if (toDestroy != null)
 						launchMissile();	
 				}	
@@ -55,23 +55,28 @@ public class LauncherDestractor extends Thread {
 					System.out.println(ex.getStackTrace());
 				}
 			}
+			isBusy = false;
 		}
 		//TODO add event of finish!
 	}
 
-	private void addLoggerHandler() throws IOException {
+	private void addLoggerHandler() {
 		FileHandler personHandler;
-		personHandler = new FileHandler(type + ":" + id + "Logger.xml", false);
-		personHandler.setFilter(new Filter() {
-			public boolean isLoggable(LogRecord rec) {
-				if (rec.getMessage().contains(id))
-					return true;
-				return false;
-			}
-		});
-		personHandler.setFormatter(new WarFormater());
-		
-		theLogger.addHandler(personHandler);
+		try {
+			personHandler = new FileHandler(type + ":" + id + "Logger.xml", false);
+			personHandler.setFilter(new Filter() {
+				public boolean isLoggable(LogRecord rec) {
+					if (rec.getMessage().contains(id))
+						return true;
+					return false;
+				}
+			});
+			personHandler.setFormatter(new WarFormater());
+			
+			theLogger.addHandler(personHandler);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void setEnemyLauncherToDestroy(EnemyLauncher toDestroy){
@@ -79,7 +84,7 @@ public class LauncherDestractor extends Thread {
 	}
 
 	public void launchMissile() throws InterruptedException {
-		String MissileId = idGenerator();
+		String MissileId = IdGenerator.enemyMissileIdGenerator();
 		DefenceDestructorMissile missile = new DefenceDestructorMissile(MissileId, toDestroy, id, type, allListeners, statistics);
 		
 		fireLaunchMissileEvent(missile.getMissileId());
@@ -96,10 +101,6 @@ public class LauncherDestractor extends Thread {
 	
 	public void registerListeners(WarEventListener listener){
 		allListeners.add(listener);
-	}
-	
-	public String idGenerator(){
-		return "L" + missleIdGen++;
 	}
 	
 	public void stopRunningDestractor(){

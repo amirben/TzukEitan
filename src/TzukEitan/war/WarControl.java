@@ -139,6 +139,22 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 		warModel.addDefenseLauncherDestractor(type);
 	}
 
+	@Override
+	public String[] getAllWarDestinations() {
+		String[] warTargets = warModel.getAllTargetCities();
+		return warTargets;
+	}
+
+	@Override
+	public void warHasBeenFinished() {
+		view.showWarHasBeenFinished();
+	}
+
+	@Override
+	public void warHasBeenStarted() {
+		view.showWarHasBeenStarted();
+	}
+
 
 
 	

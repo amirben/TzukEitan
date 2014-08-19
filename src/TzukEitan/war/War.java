@@ -3,14 +3,13 @@ package TzukEitan.war;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
 import TzukEitan.launchers.EnemyLauncher;
 import TzukEitan.launchers.IronDome;
 import TzukEitan.launchers.LauncherDestractor;
 import TzukEitan.listeners.WarEventListener;
-import TzukEitan.missiles.DefenceMissile;
 import TzukEitan.missiles.EnemyMissile;
+import TzukEitan.utils.IdGenerator;
 
 public class War implements Runnable {
 	
@@ -20,6 +19,7 @@ public class War implements Runnable {
 	private boolean isRunning = true;
 	private WarStatistics statistics;
 	private List<WarEventListener> allListeners;
+	private String[] targetCities = {"Sderot", "Ofakim", "Beer-Sheva", "Netivot", "Tel-Aviv", "Re'ut"};
 	
 	public War(){
 		allListeners = new LinkedList<WarEventListener>(); 
@@ -27,12 +27,27 @@ public class War implements Runnable {
 	}
 	
 	public void run() {
+		fireWarHasBeenStarted();
 		while(isRunning){
 					
 		}
 		//TODO finish thread properly
 		//TODO THROW EVENT OF START AND STOP WAR
+		synchronized (this) {
+			stopAllMunitions();
+			fireWarHasBeenFinished();
+		}
+	}
+	
+	private void stopAllMunitions() {
+		for (EnemyLauncher el : enemyLauncherArr)
+			el.stopEnemyLaucher();
 		
+		for (LauncherDestractor ld : launcherDestractorArr)
+			ld.stopRunningDestractor();
+		
+		for (IronDome ironDome : ironDomeArr)
+			ironDome.stopRunningIronDome();	
 	}
 	
 	public void finishWar(){
@@ -60,11 +75,14 @@ public class War implements Runnable {
 			
 			if(missileToDestroy != null && missileToDestroy.getMissileId().equals(missileId)){
 				IronDome ironDome = findFreeIronDome();
-				if(ironDome == null)
+				if(ironDome == null){
 					//TODO throw event no free iron dome
-			
-				ironDome.setMissileToDestroy(missileToDestroy);
-				ironDome.notify();
+				}
+					
+				else{
+					ironDome.setMissileToDestroy(missileToDestroy);
+					ironDome.notify();
+				}
 			}
 		}
 	}
@@ -73,10 +91,14 @@ public class War implements Runnable {
 		for(EnemyLauncher el: enemyLauncherArr){
 			if(el.getLauncherId().equals(launcherId) && el.isAlive()){
 				LauncherDestractor ld = findFreeDestructor();
-				if(ld == null)
+				
+				if(ld == null){
 					//TODO throw event no free destructor
-				ld.setEnemyLauncherToDestroy(el);
-				ld.notify();
+				}
+				else{
+					ld.setEnemyLauncherToDestroy(el);
+					ld.notify();
+				}
 			}
 		}
 	}
@@ -86,6 +108,7 @@ public class War implements Runnable {
 			if(!ironDome.getIsBusy())
 				return ironDome;
 		}
+		
 		return null;
 	}
 	
@@ -116,21 +139,26 @@ public class War implements Runnable {
 			if(el.isAlive() && !el.getIsHidden())
 				visibleIds.add(el.getLauncherId());
 		}
+		
 		return (String[])visibleIds.toArray();
 	}
 	
 	public String[] getAllLaunchersIds(){
 		ArrayList<String> visibleIds = new ArrayList<>(enemyLauncherArr.size()); 
+		
 		for(EnemyLauncher el : enemyLauncherArr){
 			if(el.isAlive())
 				visibleIds.add(el.getLauncherId());
 		}
+		
 		return (String[])visibleIds.toArray();
 	}
 
 	public void launchEnemyMissile(String launcherId, String destination, int damage) {
 		for(EnemyLauncher el : enemyLauncherArr){
+			//Check if there is enemy launcher with given id
 			if(el.getLauncherId().equals(launcherId) && el.isAlive()){
+				//Check if launcher is not in use
 				if (el.getCurrentMissile() == null){
 					el.setMissileInfo(destination, damage);
 					el.notify();
@@ -142,33 +170,50 @@ public class War implements Runnable {
 	public void addEnemyLauncher(String launcherId, boolean isHidden) {
 		EnemyLauncher launcher = new EnemyLauncher(launcherId, isHidden, statistics);
 		launcher.registerListeners(allListeners.get(0));
+		
 		enemyLauncherArr.add(launcher);
 	}
 	
 	public void addEnemyLauncher(){
-		String id = Utils.enemyLauncherIdGenerator();
+		String id = IdGenerator.enemyLauncherIdGenerator();
 		boolean isHidden = Math.random()<0.5;
+		
 		addEnemyLauncher(id, isHidden);
 	}
 
 	public void addIronDome(String id) {
 		IronDome ironDome = new IronDome(id, statistics);
 		ironDome.registerListeners(allListeners.get(0));
+		
 		ironDomeArr.add(ironDome);
 	}
 	
 	public void addIronDome() {
-		String id = Utils.IronDomeIdGenerator();
+		String id = IdGenerator.ironDomeIdGenerator();
 		addIronDome(id);
 	}
 
 	public void addDefenseLauncherDestractor(String type) {
-		String id = Utils.defenceLauncherDestructorIdGenerator(type.charAt(0));
+		String id = IdGenerator.defenseLauncherDestractorIdGenerator(type.charAt(0));
 		LauncherDestractor destructor = new LauncherDestractor(type, id, statistics);
 		destructor.registerListeners(allListeners.get(0));
 		
 		launcherDestractorArr.add(destructor);
-		
+	}
+	
+	public String[] getAllTargetCities(){
+		return targetCities;
+	}
+	
+	private void fireWarHasBeenFinished() {
+		for (WarEventListener l : allListeners)
+			l.warHasBeenFinished();
+	}
+	
+
+	private void fireWarHasBeenStarted() {
+		for (WarEventListener l : allListeners)
+			l.warHasBeenStarted();
 	}
 
 }

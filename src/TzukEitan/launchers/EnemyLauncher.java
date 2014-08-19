@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import TzukEitan.listeners.WarEventListener;
 import TzukEitan.missiles.EnemyMissile;
+import TzukEitan.utils.IdGenerator;
 import TzukEitan.utils.WarFormater;
 import TzukEitan.war.WarControl;
 import TzukEitan.war.WarStatistics;
@@ -26,21 +27,17 @@ public class EnemyLauncher extends Thread {
 	private int damage;
 	private EnemyMissile currentMissile;
 	private WarStatistics statistics;
-	private static int missleIdGen;
 	private final int LAUNCH_DURATION = 2000;
-	//private WarControl control;
 	private static Logger theLogger = Logger.getLogger("warLogger");
     	
 	public EnemyLauncher(String id, boolean isHidden, WarStatistics statistics){
 		this.id = id;
 		this.isHidden = isHidden;
-		//this.control = control;
 		this.statistics = statistics;
 
 		allListeners = new LinkedList<WarEventListener>(); 
 		firstHiddenState = isHidden;
-		missleIdGen = 100;
-
+		
 		addLoggerHandler();
 	}
 
@@ -54,9 +51,9 @@ public class EnemyLauncher extends Thread {
 				}	
 				//Exception is called when launcher has been hit
 				catch(InterruptedException ex){
-					beenHit = true;
-					//firehasBeenHitEvent();
-					//not needed because the DefenseDestructorMissile call this event
+					stopEnemyLaucher();
+					//firehasBeenHitEvent() ==> not needed because
+					//the DefenseDestructorMissile call this event
 				}
 			}	
 			currentMissile = null;
@@ -134,15 +131,11 @@ public class EnemyLauncher extends Thread {
 	
 	//Create new missile
 	public EnemyMissile createMissile(){
-		String missileId = idGenerator();
+		String missileId = IdGenerator.enemyMissileIdGenerator();
 		int flyTime = (int) Math.random() * 3000;
 		EnemyMissile missile = new EnemyMissile(missileId, destination, flyTime , damage, id, allListeners, statistics);
 		
 		return missile;
-	}
-	
-	public String idGenerator(){
-		return "M" + missleIdGen++;
 	}
 	
 	public String getLauncherId(){
@@ -158,5 +151,9 @@ public class EnemyLauncher extends Thread {
 			return currentMissile;
 		
 		return null;
+	}
+	
+	public void stopEnemyLaucher(){
+		beenHit = true;
 	}
 }

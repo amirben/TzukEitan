@@ -1,7 +1,5 @@
 package TzukEitan.view;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -11,7 +9,7 @@ import TzukEitan.utils.Utils;
 
 public class ConsoleView {
 	private List<WarEventUIListener> allListeners;
-	private Scanner scanner;
+	private Scanner input;
 
 	public ConsoleView() {
 		allListeners = new LinkedList<WarEventUIListener>();
@@ -41,11 +39,11 @@ public class ConsoleView {
 
 		while (!flag) {
 			try {
-				choise = scanner.nextInt();
+				choise = input.nextInt();
 				flag = true;
 			} catch (NumberFormatException e) {
 				System.out.println("Worng input, please try again:");
-				choise = scanner.nextInt();
+				choise = input.nextInt();
 			}
 		}
 
@@ -93,7 +91,7 @@ public class ConsoleView {
 	/* User commands */
 	private void fireAddDefenseLauncherDestractor() {
 		System.out.println("Please choose between Plane or Ship, for exit press enter");
-		String type = scanner.nextLine();
+		String type = input.nextLine();
 		type = type.toLowerCase();
 		
 		if (type.equals("plane") || type.equals("ship"))
@@ -120,28 +118,30 @@ public class ConsoleView {
 			launcersIds = l.showAllLaunchers();
 			
 			if (launcersIds != null){
-				System.out.println("Launcers to launch with:");
+				System.out.println("Launchers to launch with:");
 			
 				for (int i = 0 ; i < launcersIds.length ; i++)
 					System.out.println("\t" + (i+1) + ")" + launcersIds[i]);
 					
-				System.out.println("Choose launcer id to equip, else press enter to continue");
-				launcher = scanner.nextLine();
+				System.out.println("Choose launcher id to equip, else press enter to continue");
+				launcher = input.nextLine();
 				
 				if (!launcher.equals("")){
-					System.out.println("Enter destination to destory:");
+					System.out.println("Destination cities to destory:");
 					destinations = l.getAllWarDestinations();
 					
 					for(int j=0 ; j<destinations.length ; j++)
 						System.out.println((j+1) + ") " + destinations[j]);
 					
-					String destination = scanner.nextLine();
+					System.out.println("Enter your choise:");
+					String destination = input.nextLine();
+					
 					int damage = (int)((Math.random()*1000) + 2000);
 					l.addEnemyMissile(launcher, destination, damage);
 				}
 			}
 			else
-				System.out.println("There is no launcer yet, please add launcher first");
+				System.out.println("There is no launcher yet, please add launcher first");
 			
 		}
 	}
@@ -150,22 +150,22 @@ public class ConsoleView {
 
 	private void fireInterceptEnemyLauncher() {
 		String launcersId[];
-		String launcer;
+		String launcher;
 		
 		for (WarEventUIListener l : allListeners){
 			launcersId = l.chooseLauncherToIntercept();
 			
 			if (launcersId !=null){
-				System.out.println("Launcer to intercept:");
+				System.out.println("Launcher to intercept:");
 				
 				for (int i = 0 ; i < launcersId.length; i++)
 					System.out.println("\t" + (i+1) + ")" + launcersId[i]);
 					
-				System.out.println("Choose launcer id to intercept, else press enter to continue");
-				launcer = scanner.nextLine();
+				System.out.println("Choose launcher id to intercept, else press enter to continue");
+				launcher = input.nextLine();
 				
-				if (!launcer.equals(""))
-					l.interceptGivenLauncher(launcer);
+				if (!launcher.equals(""))
+					l.interceptGivenLauncher(launcher);
 			}
 			else 
 				System.out.println("There is no missiles to intercept!");
@@ -185,7 +185,7 @@ public class ConsoleView {
 					System.out.println("\t" + (i + 1) + ")" + missilesId[i]);
 
 				System.out.println("Choose missile id to intercept, else press enter to continue");
-				missile = scanner.nextLine();
+				missile = input.nextLine();
 				
 				if (!missile.equals(""))
 					l.interceptGivenMissile(missile);
@@ -202,10 +202,6 @@ public class ConsoleView {
 	}
 
 	private void fireFinishWar() {
-//		LocalDateTime ldt = LocalDateTime.now();
-//		DateTimeFormatter dtf = DateTimeFormatter
-//				.ofPattern("dd/MM/yyyy HH:mm:ss");
-
 		for (WarEventUIListener l : allListeners)
 			l.finishWar();
 		
@@ -284,5 +280,13 @@ public class ConsoleView {
 		msg.append("total damage: " + array[0]+"\n");
 
 		System.out.println(msg.toString());	
+	}
+	
+	public void showWarHasBeenFinished(){
+		System.out.println("=========>> Finally THIS WAR IS OVER!!! <<=========");
+	}
+	
+	public void showWarHasBeenStarted(){
+		System.out.println("=========>> War has been strated!!! <<=========");
 	}
 }

@@ -1,10 +1,11 @@
 package TzukEitan.utils;
 
 public class IdGenerator {
-	private static int ironDomeId = 100;
-	private static int enemyLauncherId = 100;
-	private static int defenseLauncherDestractorId = 100;
-	private static int missileId = 100;
+	private static int ironDomeId = 203;
+	private static int enemyLauncherId = 103;
+	private static int defenseLauncherDestractorId = 303;
+	private static int enemyMissileId = 5;
+	private static int defenseMissileId = 1000;
 	
 	
 	public static String ironDomeIdGenerator() {
@@ -15,11 +16,15 @@ public class IdGenerator {
 		return "L" + enemyLauncherId++;
 	}
 	
-	public static String defenseLauncherDestractorIdGenerator(String type){
-		return type + defenseLauncherDestractorId++;
+	public static String defenseLauncherDestractorIdGenerator(char type){
+		return  "" + type + defenseLauncherDestractorId++;
 	}
 
-	public static String missileIdGenerator() {
-		return "M" + missileId++;
+	public static String enemyMissileIdGenerator() {
+		return "M" + enemyMissileId++;
+	}
+	
+	public static String defensMissileIdGenerator() {
+		return "DM" + defenseMissileId++;
 	}
 }

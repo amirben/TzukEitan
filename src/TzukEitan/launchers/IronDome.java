@@ -5,14 +5,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Filter;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import TzukEitan.listeners.WarEventListener;
 import TzukEitan.missiles.DefenceMissile;
 import TzukEitan.missiles.EnemyMissile;
-import TzukEitan.utils.Utils;
+import TzukEitan.utils.IdGenerator;
 import TzukEitan.utils.WarFormater;
 import TzukEitan.war.WarStatistics;
 
@@ -22,13 +21,11 @@ public class IronDome extends Thread {
 	private String id;
 	private WarStatistics statistics;
 	private boolean isRunning = true;
-	private static int missleIdGen;
 	private boolean isBusy = false;
 	private static Logger theLogger = Logger.getLogger("warLogger");
 	
 	public IronDome(String id, WarStatistics statistics){
 		allListeners = new LinkedList<WarEventListener>(); 
-		missleIdGen = 100;
 		this.statistics = statistics;
 		this.id = id;
 		
@@ -41,7 +38,7 @@ public class IronDome extends Thread {
 				try{
 					//Wait until user will try to destory launcher
 					wait();
-					
+					isBusy = true;
 					if (toDestroy != null)
 						launchMissile();	
 				}	
@@ -50,6 +47,7 @@ public class IronDome extends Thread {
 					//TODO something
 				}
 			}
+			isBusy = false;
 		}
 		//TODO close thread correctly maybe throw exception
 	}
@@ -80,7 +78,7 @@ public class IronDome extends Thread {
 	}
 	
 	public void launchMissile() throws InterruptedException {
-		String missieId = idGenerator();
+		String missieId = IdGenerator.defensMissileIdGenerator();
 		DefenceMissile missile = new DefenceMissile(missieId , toDestroy, id, allListeners, statistics);
 		
 		fireLaunchMissileEvent(missile.getMissileId());
@@ -96,11 +94,6 @@ public class IronDome extends Thread {
 	
 	public void registerListeners(WarEventListener listener){
 		allListeners.add(listener);
-	}
-	
-	//Generate new ID
-	public String idGenerator(){
-		return "M" + missleIdGen++;
 	}
 	
 	public void stopRunningIronDome(){

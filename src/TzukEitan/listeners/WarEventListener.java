@@ -31,4 +31,11 @@ public interface WarEventListener {
 	
 	/**Defense event for hit interception (to Launcher) **/
 	public void defenseHitInterceptionLauncher (String whoLaunchedMeId,String Type, String id, String enemyLauncherId);
+	
+	/**Announce when the war endss**/
+	public void warHasBeenFinished();
+	
+	/**Announce when the war starts**/
+	public void warHasBeenStarted();
+	
 }
