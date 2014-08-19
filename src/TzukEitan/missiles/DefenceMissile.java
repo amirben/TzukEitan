@@ -1,11 +1,16 @@
 package TzukEitan.missiles;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Filter;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import TzukEitan.listeners.WarEventListener;
+import TzukEitan.utils.WarFormater;
 import TzukEitan.war.WarStatistics;
 
 /** Missile for iron dome**/
@@ -49,6 +54,27 @@ public class DefenceMissile extends Thread {
 			//TODO add logger
 			System.out.println(ex.getStackTrace());
 		}
+	}
+	
+	private void addLoggerHandler(){
+		FileHandler personHandler;
+		try {
+			personHandler = new FileHandler("Iron dome:" + id + "Logger.xml", false);
+			personHandler.setFilter(new Filter() {
+				public boolean isLoggable(LogRecord rec) {
+					if (rec.getMessage().contains(id))
+						return true;
+					return false;
+				}
+			});
+			personHandler.setFormatter(new WarFormater());
+			
+			theLogger.addHandler(personHandler);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 	public String getMissileId(){
