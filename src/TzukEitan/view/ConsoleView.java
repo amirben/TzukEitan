@@ -272,6 +272,7 @@ public class ConsoleView {
 
 	public void showStatistics(long[] array) {
 		StringBuilder msg = new StringBuilder();
+		msg.append("[" + Utils.getCurrentTime() + "]" + "==> War Statistics");
 		msg.append("Num of launch missiles: " + array[0]+"\n");
 		msg.append("Num of intercept missiles: " + array[1]+"\n");
 		msg.append("Num of hit target missiles: " + array[2]+"\n");
@@ -283,13 +284,15 @@ public class ConsoleView {
 	
 	public void showWarHasBeenFinished(){
 		System.out.println("=========>> Finally THIS WAR IS OVER!!! <<=========");
+		System.out.println("[" + Utils.getCurrentTime() + "]");
 	}
 	
 	public void showWarHasBeenStarted(){
 		System.out.println("=========>> War has been strated!!! <<=========");
+		System.out.println("[" + Utils.getCurrentTime() + "]");
 	}
 
 	public void showNoSuchObject(String type) {
-		System.out.println("Cannot find " + type + " you selected in war");
+		System.out.println("[" + Utils.getCurrentTime() + "] Cannot find " + type + " you selected in war");
 	}
 }

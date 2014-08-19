@@ -22,6 +22,10 @@ public class DefenceDestructorMissile extends Thread {
 	private final int LAUNCH_DURATION = 3000;
 	private static Logger theLogger = Logger.getLogger("myLogger");
 	
+	static {
+		theLogger.setUseParentHandlers(false);
+	}
+	
 	public DefenceDestructorMissile(String id, EnemyLauncher LauncherToDestroy, String whoLunchedMeId, String whoLaunchedMeType, List<WarEventListener> allListeners, WarStatistics statistics ){
 		allListeners = new LinkedList<WarEventListener>(); 
 		

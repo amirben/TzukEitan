@@ -24,6 +24,10 @@ public class DefenceMissile extends Thread {
 	private final int LAUNCH_DURATION = 2000;
 	private static Logger theLogger = Logger.getLogger("myLogger");
 	
+	static {
+		theLogger.setUseParentHandlers(false);
+	}
+	
 	public DefenceMissile(String id, EnemyMissile missileToDestroy, String whoLunchedMeId, List<WarEventListener> allListeners, WarStatistics statistics){
 		allListeners = new LinkedList<WarEventListener>();
 		

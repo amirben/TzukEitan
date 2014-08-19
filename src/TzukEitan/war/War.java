@@ -112,8 +112,11 @@ public class War extends Thread{
 			missileToDestroy = el.getCurrentMissile();
 			
 			if(missileToDestroy != null && missileToDestroy.getMissileId().equals(missileId)){
-				ironDome.setMissileToDestroy(missileToDestroy);
-				ironDome.notify();
+				synchronized (ironDome) {
+					ironDome.setMissileToDestroy(missileToDestroy);
+					ironDome.notify();
+				}
+				
 			}
 		}
 	}
@@ -141,8 +144,10 @@ public class War extends Thread{
 	private void interceptGivenLauncher(String launcherId, LauncherDestractor destructor){
 		for(EnemyLauncher el: enemyLauncherArr){
 			if(el.getLauncherId().equals(launcherId) && el.isAlive()){
+				synchronized (destructor) {
 					destructor.setEnemyLauncherToDestroy(el);
 					destructor.notify();
+				}	
 			}
 		}
 	}
@@ -234,8 +239,11 @@ public class War extends Thread{
 			if(el.getLauncherId().equals(launcherId) && el.isAlive()){
 				//Check if launcher is not in use
 				if (el.getCurrentMissile() == null){
-					el.setMissileInfo(destination, damage);
-					el.notify();
+					synchronized (el) {
+						el.setMissileInfo(destination, damage);
+						el.notify();
+					}
+					
 				}
 			}
 		}
