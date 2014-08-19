@@ -56,27 +56,6 @@ public class DefenceMissile extends Thread {
 		}
 	}
 	
-	private void addLoggerHandler(){
-		FileHandler personHandler;
-		try {
-			personHandler = new FileHandler("Iron dome:" + id + "Logger.xml", false);
-			personHandler.setFilter(new Filter() {
-				public boolean isLoggable(LogRecord rec) {
-					if (rec.getMessage().contains(id))
-						return true;
-					return false;
-				}
-			});
-			personHandler.setFormatter(new WarFormater());
-			
-			theLogger.addHandler(personHandler);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-	
 	public String getMissileId(){
 		return id;
 	}
@@ -85,6 +64,7 @@ public class DefenceMissile extends Thread {
 		for (WarEventListener l : allListeners) {
 			l.defenseHitInterceptionMissile(whoLunchedMeId, id, missileToDestroy.getMissileId());
 		}
+		
 		statistics.increaseNumOfInterceptMissiles();
 		theLogger.log(Level.INFO,whoLunchedMeId +":\t" + missileToDestroy.getMissileId() + "\tSucces");
 		
@@ -94,6 +74,7 @@ public class DefenceMissile extends Thread {
 		for (WarEventListener l : allListeners) {
 			l.defenseMissInterceptionMissile(whoLunchedMeId, id, missileToDestroy.getMissileId());
 		}
+		
 		theLogger.log(Level.INFO,whoLunchedMeId +":\t" + missileToDestroy.getMissileId() + "\tFail: " + missileToDestroy.getDamage());
 	}
 	
