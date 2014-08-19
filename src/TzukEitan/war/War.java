@@ -28,6 +28,7 @@ public class War extends Thread{
 	
 	public void run() {
 		fireWarHasBeenStarted();
+		
 		while(isRunning){
 			fireWaitForOrder();	
 			try {

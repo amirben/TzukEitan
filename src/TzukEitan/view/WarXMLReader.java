@@ -11,7 +11,7 @@ import javax.xml.parsers.*;
 
 import java.io.*;
 
-public class WarXMLReader {
+public class WarXMLReader extends Thread {
 	private DocumentBuilderFactory factory;
 	private DocumentBuilder builder;
 	private Document document;
@@ -29,6 +29,10 @@ public class WarXMLReader {
 
 		root = document.getDocumentElement();
 
+		
+	}
+	
+	public void run(){
 		readEnemyLaunchers();
 		readDefenseDestructors();
 	}

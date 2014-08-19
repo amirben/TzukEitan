@@ -178,9 +178,4 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 	public void waitForOrder() {
 		view.selectUserChoiseMethod();
 	}
-
-
-
-	
-
 }
