@@ -63,7 +63,7 @@ public class LauncherDestractor extends Thread {
 	private void addLoggerHandler() {
 		FileHandler personHandler;
 		try {
-			personHandler = new FileHandler(type + ":" + id + "Logger.xml", false);
+			personHandler = new FileHandler(type + "" + id + "Logger.xml", false);
 			personHandler.setFilter(new Filter() {
 				public boolean isLoggable(LogRecord rec) {
 					if (rec.getMessage().contains(id))

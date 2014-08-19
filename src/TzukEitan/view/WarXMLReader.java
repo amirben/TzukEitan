@@ -42,7 +42,6 @@ public class WarXMLReader extends Thread {
 		boolean isHidden;
 		Element tempLauncher;
 
-		System.out.println("Enemy launchers:");
 		NodeList launchers = root.getElementsByTagName("launcher");
 
 		for (int i = 0; i < launchers.getLength(); i++) {
@@ -186,7 +185,7 @@ public class WarXMLReader extends Thread {
 			public void run() {
 				try {
 					sleep(tempDestructTime);
-					if(tempTargetId.charAt(0)=='D')
+					if(tempTargetId.charAt(0) == 'D')
 						warControl.interceptGivenMissile(tempLauncherId, tempTargetId);
 					else
 						warControl.interceptGivenLauncher(tempLauncherId, tempTargetId);

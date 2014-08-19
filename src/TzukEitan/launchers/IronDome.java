@@ -55,7 +55,7 @@ public class IronDome extends Thread {
 	private void addLoggerHandler(){
 		FileHandler personHandler;
 		try {
-			personHandler = new FileHandler("Iron dome:" + id + "Logger.xml", false);
+			personHandler = new FileHandler("Iron dome" + id + "Logger.xml", false);
 			personHandler.setFilter(new Filter() {
 				public boolean isLoggable(LogRecord rec) {
 					if (rec.getMessage().contains(id))

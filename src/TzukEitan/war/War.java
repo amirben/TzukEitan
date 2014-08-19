@@ -1,8 +1,13 @@
 package TzukEitan.war;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Filter;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import TzukEitan.launchers.EnemyLauncher;
 import TzukEitan.launchers.IronDome;
@@ -10,6 +15,7 @@ import TzukEitan.launchers.LauncherDestractor;
 import TzukEitan.listeners.WarEventListener;
 import TzukEitan.missiles.EnemyMissile;
 import TzukEitan.utils.IdGenerator;
+import TzukEitan.utils.WarFormater;
 
 public class War extends Thread{
 	
@@ -20,8 +26,15 @@ public class War extends Thread{
 	private WarStatistics statistics;
 	private List<WarEventListener> allListeners;
 	private String[] targetCities = {"Sderot", "Ofakim", "Beer-Sheva", "Netivot", "Tel-Aviv", "Re'ut"};
+	private static Logger theLogger = Logger.getLogger("warLogger");
+	
+	static {
+		theLogger.setUseParentHandlers(false);
+	}
 	
 	public War(){
+		addLoggerHandler();
+		
 		allListeners = new LinkedList<WarEventListener>(); 
 		statistics = new WarStatistics();
 	}
@@ -30,9 +43,9 @@ public class War extends Thread{
 		fireWarHasBeenStarted();
 		
 		while(isRunning){
-			fireWaitForOrder();	
+			//fireWaitForOrder();	
 			try {
-				sleep(5000);
+				sleep(100000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -45,7 +58,24 @@ public class War extends Thread{
 		}
 	}
 	
+	private void addLoggerHandler(){
+		FileHandler personHandler;
+		try {
+			personHandler = new FileHandler("warLogger.xml", false);
+			personHandler.setFilter(new Filter() {
+				public boolean isLoggable(LogRecord rec) {
+					return true;
+				}
+			});
+			personHandler.setFormatter(new WarFormater());
+			
+			theLogger.addHandler(personHandler);
+			
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
 
+	}
 
 	private void stopAllMunitions() {
 		for (EnemyLauncher el : enemyLauncherArr)
