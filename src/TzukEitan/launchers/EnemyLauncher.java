@@ -28,13 +28,13 @@ public class EnemyLauncher extends Thread {
 	private WarStatistics statistics;
 	private static int missleIdGen;
 	private final int LAUNCH_DURATION = 2000;
-	private WarControl control;
+	//private WarControl control;
 	private static Logger theLogger = Logger.getLogger("warLogger");
     	
-	public EnemyLauncher(String id, boolean isHidden, WarControl control, WarStatistics statistics) throws IOException {
+	public EnemyLauncher(String id, boolean isHidden, WarStatistics statistics){
 		this.id = id;
 		this.isHidden = isHidden;
-		this.control = control;
+		//this.control = control;
 		this.statistics = statistics;
 
 		allListeners = new LinkedList<WarEventListener>(); 
@@ -63,20 +63,31 @@ public class EnemyLauncher extends Thread {
 		}
 	}
 
-	private void addLoggerHandler() throws IOException {
+	private void addLoggerHandler(){
 		FileHandler personHandler;
-		personHandler = new FileHandler("Launcher:" + id + "Logger.xml", false);
-		personHandler.setFilter(new Filter() {
-			public boolean isLoggable(LogRecord rec) {
-				if (rec.getMessage().contains(id))
-					return true;
-				return false;
-				//TODO use getParameters();
-			}
-		});
-		personHandler.setFormatter(new WarFormater());
-		
-		theLogger.addHandler(personHandler);
+		try {
+			personHandler = new FileHandler("Launcher:" + id + "Logger.xml", false);
+			personHandler.setFilter(new Filter() {
+				public boolean isLoggable(LogRecord rec) {
+					if (rec.getMessage().contains(id))
+						return true;
+					return false;
+					//TODO use getParameters();
+				}
+			});
+			personHandler.setFormatter(new WarFormater());
+			
+			theLogger.addHandler(personHandler);
+			
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void setMissileInfo(String destination, int damage){
+		this.destination = destination;
+		this.damage = damage;
 	}
 	
 	public void setDamage(int damage){

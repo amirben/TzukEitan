@@ -11,7 +11,6 @@ import TzukEitan.utils.Utils;
 
 public class ConsoleView {
 	private List<WarEventUIListener> allListeners;
-	private StringBuilder menu = new StringBuilder(1000);
 	private Scanner scanner;
 
 	public ConsoleView() {
@@ -74,7 +73,7 @@ public class ConsoleView {
 			break;
 
 		case 5:
-			fireInterceptMissileLauncher();
+			fireInterceptEnemyLauncher();
 			break;
 
 		case 6:
@@ -113,34 +112,43 @@ public class ConsoleView {
 	}
 	
 	private void fireAddEnemyMissile() {
-		String[] launcersId;
-		String launcer;
+		String[] launcersIds;
+		String launcher;
+		String[] destinations;
 		
 		for (WarEventUIListener l : allListeners){
-			launcersId = l.showAllLaunchers();
+			launcersIds = l.showAllLaunchers();
 			
-			if (launcersId != null){
-				System.out.println("Launcer to launch with:");
+			if (launcersIds != null){
+				System.out.println("Launcers to launch with:");
 			
-				for (int i = 0 ; i < launcersId.length ; i++)
-					System.out.println("\t" + (i+1) + ")" + launcersId[i]);
+				for (int i = 0 ; i < launcersIds.length ; i++)
+					System.out.println("\t" + (i+1) + ")" + launcersIds[i]);
 					
-				System.out.println("Wrtie launcer id to equip, else press enter to continue");
-				launcer = scanner.nextLine();
+				System.out.println("Choose launcer id to equip, else press enter to continue");
+				launcher = scanner.nextLine();
 				
-				if (!launcer.equals("")){
+				if (!launcher.equals("")){
 					System.out.println("Enter destination to destory:");
+					destinations = l.getAllWarDestinations();
+					
+					for(int j=0 ; j<destinations.length ; j++)
+						System.out.println((j+1) + ") " + destinations[j]);
+					
 					String destination = scanner.nextLine();
-					l.addEnemyMissile(destination);
+					int damage = (int)((Math.random()*1000) + 2000);
+					l.addEnemyMissile(launcher, destination, damage);
 				}
 			}
 			else
-				System.out.println("Ther is no launcer yet, please add launcher first");
+				System.out.println("There is no launcer yet, please add launcher first");
 			
 		}
 	}
 
-	private void fireInterceptMissileLauncher() {
+	private StringBuilder menu = new StringBuilder(1000);
+
+	private void fireInterceptEnemyLauncher() {
 		String launcersId[];
 		String launcer;
 		
@@ -265,5 +273,16 @@ public class ConsoleView {
 		System.out.println(type + whoLaunchedMeId + " fired missile: "
 				+ missileId + " and intercept succesfully the Launcher: "
 				+ enemyLauncherId);
+	}
+
+	public void showStatistics(long[] array) {
+		StringBuilder msg = new StringBuilder();
+		msg.append("Num of launch missiles: " + array[0]+"\n");
+		msg.append("Num of intercept missiles: " + array[1]+"\n");
+		msg.append("Num of hit target missiles: " + array[2]+"\n");
+		msg.append("Num of launchers destroyed: " + array[3]+"\n");
+		msg.append("total damage: " + array[0]+"\n");
+
+		System.out.println(msg.toString());	
 	}
 }

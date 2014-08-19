@@ -41,7 +41,7 @@ public class LauncherDestractor extends Thread {
 	}
 	
 	public void run() {
-		while (!isRunning){
+		while (isRunning){
 			synchronized (this) {
 				try{
 					//Wait until user try to destory missile

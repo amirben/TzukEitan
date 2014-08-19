@@ -54,4 +54,15 @@ public class WarStatistics {
 	public long getTotalDamage(){
 		return totalDamage;
 	}
+	
+	public long[] toArray(){
+		long[] arr = new long[5];
+		arr[0] = numOfLaunchMissiles;
+		arr[1] = numOfInterceptMissiles;
+		arr[2] = numOfHitTargetMissiles;
+		arr[3] = numOfLaunchersDestroyed;
+		arr[4] = totalDamage;
+		
+		return arr;
+	}
 }

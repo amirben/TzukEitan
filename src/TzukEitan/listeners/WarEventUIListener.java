@@ -23,15 +23,21 @@ public interface WarEventUIListener {
 	public String[] showAllLaunchers();
 	
 	/**Add missile to given launcher**/
-	public void addEnemyMissile(String destination);
+	public void addEnemyMissile(String launcherId, String destination, int damage);
 	
 	/**Add enemy launcher**/
 	public void addEnemyLauncher();
+	
+	/**Add enemy launcher from xml**/
+	public void addEnemyLauncher(String launcherId, boolean isHidden);
 	
 	/**Add defense Iron Dome**/
 	public void addIronDome();
 	
 	/**Add plane or ship**/
 	public void addDefenseLauncherDestractor(String type);
+
+	/**Add defense Iron Dome from xml**/
+	void addIronDome(String id);
 }
 

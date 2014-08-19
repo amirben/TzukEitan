@@ -69,6 +69,76 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 		view.showHitInterceptionLauncher(whoLaunchedMeId, type, enemyLauncherId, missileId);
 	}
 
+	@Override
+	public void finishWar() {
+		warModel.finishWar();
+	}
+
+	@Override
+	public void showStatistics() {
+		WarStatistics statistics = warModel.getStatistics();
+		view.showStatistics(statistics.toArray());	
+	}
+
+	@Override
+	public String[] chooseMissileToIntercept() {
+		String[] ids = warModel.getAllDuringFlyMissilesIds();
+		return ids;
+	}
+
+	@Override
+	public void interceptGivenMissile(String id) {
+		warModel.interceptGivenMissile(id);
+	}
+
+	@Override
+	public String[] chooseLauncherToIntercept() {
+		String ids[] = warModel.getAllVisibleLaunchersIds();
+		return ids;
+	}
+
+	@Override
+	public void interceptGivenLauncher(String id) {
+		warModel.interceptGivenLauncher(id);
+	}
+
+	@Override
+	public String[] showAllLaunchers() {
+		String ids[] = warModel.getAllLaunchersIds();
+		return ids;
+	}
+
+	@Override
+	public void addEnemyMissile(String launcherId, String destination, int damage) {
+		warModel.launchEnemyMissile(launcherId, destination, damage);
+	}
+
+	@Override
+	public void addEnemyLauncher(String launcherId, boolean isHidden) {
+		warModel.addEnemyLauncher(launcherId, isHidden);
+	}
+	
+	@Override
+	public void addEnemyLauncher() {
+		warModel.addEnemyLauncher();
+	}
+
+	@Override
+	public void addIronDome() {
+		warModel.addIronDome();
+	}
+	
+	@Override
+	public void addIronDome(String id) {
+		warModel.addIronDome(id);
+		
+	}
+
+	@Override
+	public void addDefenseLauncherDestractor(String type) {
+		warModel.addDefenseLauncherDestractor(type);
+	}
+
 
 
 	

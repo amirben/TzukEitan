@@ -26,7 +26,7 @@ public class IronDome extends Thread {
 	private boolean isBusy = false;
 	private static Logger theLogger = Logger.getLogger("warLogger");
 	
-	public IronDome(String id, WarStatistics statistics) throws IOException {
+	public IronDome(String id, WarStatistics statistics){
 		allListeners = new LinkedList<WarEventListener>(); 
 		missleIdGen = 100;
 		this.statistics = statistics;
@@ -54,19 +54,25 @@ public class IronDome extends Thread {
 		//TODO close thread correctly maybe throw exception
 	}
 	
-	private void addLoggerHandler() throws IOException {
+	private void addLoggerHandler(){
 		FileHandler personHandler;
-		personHandler = new FileHandler("Iron dome:" + id + "Logger.xml", false);
-		personHandler.setFilter(new Filter() {
-			public boolean isLoggable(LogRecord rec) {
-				if (rec.getMessage().contains(id))
-					return true;
-				return false;
-			}
-		});
-		personHandler.setFormatter(new WarFormater());
-		
-		theLogger.addHandler(personHandler);
+		try {
+			personHandler = new FileHandler("Iron dome:" + id + "Logger.xml", false);
+			personHandler.setFilter(new Filter() {
+				public boolean isLoggable(LogRecord rec) {
+					if (rec.getMessage().contains(id))
+						return true;
+					return false;
+				}
+			});
+			personHandler.setFormatter(new WarFormater());
+			
+			theLogger.addHandler(personHandler);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public void setMissileToDestroy(EnemyMissile toDestroy){
