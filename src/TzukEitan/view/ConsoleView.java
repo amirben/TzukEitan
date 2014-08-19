@@ -204,68 +204,68 @@ public class ConsoleView {
 		for (WarEventUIListener l : allListeners)
 			l.finishWar();
 		
-		System.out.println("==> The War is OVER at: " + Utils.getCurrentTime());
+		//System.out.println("==> The War is OVER at: " + Utils.getCurrentTime());
 	}
 
 	/* Prints to screen event from controller */
 	public void showDefenseLaunchMissile(String MunitionsId, String missileId,
 			String enemyMissileId) {
-		System.out.println("Iron dome: " + MunitionsId
+		System.out.println("[" + Utils.getCurrentTime() + "] " + "Iron dome: " + MunitionsId
 				+ " just launched missile: " + " towards missile: "
 				+ enemyMissileId);
 	}
 
 	public void showDefenseLaunchMissile(String MunitionsId, String type,
 			String missileId, String enemyLauncherId) {
-		System.out.println(type + ": " + MunitionsId
+		System.out.println("[" + Utils.getCurrentTime() + "] " + type + ": " + MunitionsId
 				+ " just launched missile: " + " towards launcher: "
 				+ enemyLauncherId);
 	}
 
 	public void showEnemyLaunchMissile(String MunitionsId, String missileId,
 			String destination, int damage) {
-		System.out.println("Launcher: " + MunitionsId
+		System.out.println("[" + Utils.getCurrentTime() + "] " + "Launcher: " + MunitionsId
 				+ " just launched missile: " + missileId + " towards: "
 				+ destination + " its about to cause damade of: " + damage);
 	}
 
 	public void showLauncherIsHidden(String id) {
-		System.out.println("Launcher: " + id + " just turned Hidden again");
+		System.out.println("[" + Utils.getCurrentTime() + "] " + "Launcher: " + id + " just turned Hidden again");
 	}
 
 	public void showLauncherIsVisible(String id) {
-		System.out.println("Launcher: " + id + " just turned visible");
+		System.out.println("[" + Utils.getCurrentTime() + "] " + "Launcher: " + id + " just turned visible");
 	}
 
 	public void showMissInterceptionMissile(String whoLaunchedMeId, String id,
 			String enemyMissileId) {
-		System.out.println("Iron Dome: " + whoLaunchedMeId + " fired missile: "
+		System.out.println("[" + Utils.getCurrentTime() + "] " + "Iron Dome: " + whoLaunchedMeId + " fired missile: "
 				+ id + " but missed the missile: " + enemyMissileId);
 	}
 
 	public void showHitInterceptionMissile(String whoLaunchedMeId, String id,
 			String enemyMissileId) {
-		System.out.println("Iron Dome: " + whoLaunchedMeId + " fired missile: "
+		System.out.println("[" + Utils.getCurrentTime() + "] " + "Iron Dome: " + whoLaunchedMeId + " fired missile: "
 				+ id + " and intercept succesfully the missile: "
 				+ enemyMissileId);
 	}
 
 	public void showEnemyHitDestination(String whoLaunchedMeId, String id,
 			String destination, int damage) {
-		System.out.println("Enemy Launcher: " + whoLaunchedMeId + " caused "
+		System.out.println("[" + Utils.getCurrentTime() + "] " + "Enemy Launcher: " + whoLaunchedMeId + " caused "
 				+ damage + " damage to: " + destination + ", with missile: "
 				+ id);
 	}
 
 	public void showMissInterceptionLauncher(String whoLaunchedMeId,
 			String type, String enemyLauncherId, String missileId) {
-		System.out.println(type + whoLaunchedMeId + " fired missile: "
+		System.out.println("[" + Utils.getCurrentTime() + "]" + type + whoLaunchedMeId + " fired missile: "
 				+ missileId + " but missed the Launcher: " + enemyLauncherId);
 	}
 
 	public void showHitInterceptionLauncher(String whoLaunchedMeId,
 			String type, String enemyLauncherId, String missileId) {
-		System.out.println(type + whoLaunchedMeId + " fired missile: "
+		System.out.println("[" + Utils.getCurrentTime() + "]" + type + whoLaunchedMeId + " fired missile: "
 				+ missileId + " and intercept succesfully the Launcher: "
 				+ enemyLauncherId);
 	}

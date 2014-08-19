@@ -66,14 +66,14 @@ public class DefenceDestructorMissile extends Thread {
 			l.defenseHitInterceptionLauncher(whoLaunchedMeId, whoLaunchedMeType, id, LauncherToDestroy.getLauncherId());
 		}
 		statistics.increaseNumOfLauncherDestroyed();
-		theLogger.log(Level.INFO,whoLaunchedMeId + ":\t"+ LauncherToDestroy.getLauncherId() + "\tSucces");	
+		theLogger.log(Level.INFO,whoLaunchedMeId + ":\t"+ LauncherToDestroy.getLauncherId() + "\tSucces"  + "\n");	
 	}
 	
 	public void fireMissEvent(){
 		for (WarEventListener l : allListeners) {
 			l.defenseMissInterceptionLauncher(whoLaunchedMeId, whoLaunchedMeType, id, LauncherToDestroy.getLauncherId());
 		}
-		theLogger.log(Level.INFO,whoLaunchedMeId + ":\t"+ LauncherToDestroy.getLauncherId() + "\tFail");
+		theLogger.log(Level.INFO,whoLaunchedMeId + ":\t"+ LauncherToDestroy.getLauncherId() + "\tFail"  + "\n");
 	}
 	
 	public void registerListeners(WarEventListener listener){

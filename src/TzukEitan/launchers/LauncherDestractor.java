@@ -63,7 +63,7 @@ public class LauncherDestractor extends Thread {
 	private void addLoggerHandler() {
 		FileHandler personHandler;
 		try {
-			personHandler = new FileHandler(type + "" + id + "Logger.xml", false);
+			personHandler = new FileHandler(type + "" + id + "Logger.xml", true);
 			personHandler.setFilter(new Filter() {
 				public boolean isLoggable(LogRecord rec) {
 					if (rec.getMessage().contains(id))
@@ -97,6 +97,8 @@ public class LauncherDestractor extends Thread {
 		for (WarEventListener l : allListeners) {
 			l.defenseLaunchMissile(id, type, missileId, toDestroy.getLauncherId());
 		}
+		theLogger.log(Level.INFO, id +"\tlaunch: " + missileId + "\ttarget: " + toDestroy.getLauncherId() + "\n");
+
 	}
 	
 	public void registerListeners(WarEventListener listener){

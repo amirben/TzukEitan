@@ -97,7 +97,7 @@ public class WarXMLReader extends Thread {
 		Thread temp = new Thread() {
 			public void run() {
 				try {
-					sleep(tempLaunchTime);
+					sleep(tempLaunchTime * 1000);
 					warControl.addEnemyMissile(tempLauncherId, tempDestination, tempDamage);
 					
 				} catch (InterruptedException e) {
@@ -184,7 +184,7 @@ public class WarXMLReader extends Thread {
 		Thread temp = new Thread() {
 			public void run() {
 				try {
-					sleep(tempDestructTime);
+					sleep(tempDestructTime * 1000);
 					if(tempTargetId.charAt(0) == 'D')
 						warControl.interceptGivenMissile(tempLauncherId, tempTargetId);
 					else

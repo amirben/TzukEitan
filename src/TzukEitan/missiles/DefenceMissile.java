@@ -70,7 +70,7 @@ public class DefenceMissile extends Thread {
 		}
 		
 		statistics.increaseNumOfInterceptMissiles();
-		theLogger.log(Level.INFO,whoLunchedMeId +":\t" + missileToDestroy.getMissileId() + "\tSucces");
+		theLogger.log(Level.INFO,whoLunchedMeId +":\t" + missileToDestroy.getMissileId() + "\tSucces" + "\n");
 		
 	}
 	
@@ -79,7 +79,7 @@ public class DefenceMissile extends Thread {
 			l.defenseMissInterceptionMissile(whoLunchedMeId, id, missileToDestroy.getMissileId());
 		}
 		
-		theLogger.log(Level.INFO,whoLunchedMeId +":\t" + missileToDestroy.getMissileId() + "\tFail: " + missileToDestroy.getDamage());
+		theLogger.log(Level.INFO,whoLunchedMeId +":\t" + missileToDestroy.getMissileId() + "\tFail: " + missileToDestroy.getDamage() + "\n");
 	}
 	
 	public void registerListeners(WarEventListener listener){

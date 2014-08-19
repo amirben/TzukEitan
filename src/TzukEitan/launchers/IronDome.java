@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Filter;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -55,7 +56,7 @@ public class IronDome extends Thread {
 	private void addLoggerHandler(){
 		FileHandler personHandler;
 		try {
-			personHandler = new FileHandler("Iron dome" + id + "Logger.xml", false);
+			personHandler = new FileHandler("Iron dome" + id + "Logger.xml", true);
 			personHandler.setFilter(new Filter() {
 				public boolean isLoggable(LogRecord rec) {
 					if (rec.getMessage().contains(id))
@@ -90,6 +91,7 @@ public class IronDome extends Thread {
 		for (WarEventListener l : allListeners) {
 			l.defenseLaunchMissile(id, missileId, toDestroy.getMissileId());
 		}
+		theLogger.log(Level.INFO, id +"\tlaunch: " + missileId + "\ttarget: " + toDestroy.getMissileId()  + "\n");
 	}
 	
 	public void registerListeners(WarEventListener listener){

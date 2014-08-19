@@ -61,7 +61,7 @@ public class War extends Thread{
 	private void addLoggerHandler(){
 		FileHandler personHandler;
 		try {
-			personHandler = new FileHandler("warLogger.xml", false);
+			personHandler = new FileHandler("warLogger.xml", true);
 			personHandler.setFilter(new Filter() {
 				public boolean isLoggable(LogRecord rec) {
 					return true;
@@ -106,7 +106,7 @@ public class War extends Thread{
 		return (String[]) missileIds.toArray();
 	}
 	
-	private void interceptGivenMissile(String missileId, IronDome ironDome){
+	private synchronized void interceptGivenMissile(String missileId, IronDome ironDome){
 		EnemyMissile missileToDestroy;
 		for(EnemyLauncher el: enemyLauncherArr){
 			missileToDestroy = el.getCurrentMissile();
@@ -141,7 +141,7 @@ public class War extends Thread{
 			}
 	}
 	
-	private void interceptGivenLauncher(String launcherId, LauncherDestractor destructor){
+	private synchronized void interceptGivenLauncher(String launcherId, LauncherDestractor destructor){
 		for(EnemyLauncher el: enemyLauncherArr){
 			if(el.getLauncherId().equals(launcherId) && el.isAlive()){
 				synchronized (destructor) {
@@ -233,7 +233,7 @@ public class War extends Thread{
 		return (String[])visibleIds.toArray();
 	}
 
-	public void launchEnemyMissile(String launcherId, String destination, int damage) {
+	public synchronized void launchEnemyMissile(String launcherId, String destination, int damage) {
 		for(EnemyLauncher el : enemyLauncherArr){
 			//Check if there is enemy launcher with given id
 			if(el.getLauncherId().equals(launcherId) && el.isAlive()){

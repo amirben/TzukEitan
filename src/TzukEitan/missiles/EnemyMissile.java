@@ -44,7 +44,7 @@ public class EnemyMissile extends Thread {
 		//Interrupt is thrown when Enemy missile has been hit. 
 		}catch(InterruptedException ex){
 			//this event was already being thrown by the missile who hit this missile.
-			theLogger.log(Level.INFO, whoLaunchedMeId +":\t" + destination + "\tlaunch time: " + launchTime +"\tinterception time: " + Utils.getCurrentTime() + "\tintercepted");
+			theLogger.log(Level.INFO, whoLaunchedMeId +":\t" + destination + "\tlaunch time: " + launchTime +"\tinterception time: " + Utils.getCurrentTime() + "\tintercepted" + "\n");
 			beenHit = true;
 		}
 		
@@ -58,7 +58,7 @@ public class EnemyMissile extends Thread {
 		}
 		statistics.increaseNumOfHitTargetMissiles();
 		statistics.increaseTotalDamage(damage);
-		theLogger.log(Level.INFO,whoLaunchedMeId +":\t" + destination + "\tlaunch time: " + launchTime +"\tland time: " + Utils.getCurrentTime() + "\tHit - damage: " + damage);
+		theLogger.log(Level.INFO,whoLaunchedMeId +":\t" + destination + "\tlaunch time: " + launchTime +"\tland time: " + Utils.getCurrentTime() + "\tHit - damage: " + damage + "\n");
 	}
 	
 	public void registerListeners(WarEventListener listener){

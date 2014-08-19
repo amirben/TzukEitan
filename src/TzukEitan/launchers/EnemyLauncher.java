@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Filter;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -63,7 +64,7 @@ public class EnemyLauncher extends Thread {
 	private void addLoggerHandler(){
 		FileHandler personHandler;
 		try {
-			personHandler = new FileHandler("Launcher" + id + "Logger.xml", false);
+			personHandler = new FileHandler("Launcher" + id + "Logger.xml", true);
 			personHandler.setFilter(new Filter() {
 				public boolean isLoggable(LogRecord rec) {
 					if (rec.getMessage().contains(id))
@@ -123,6 +124,7 @@ public class EnemyLauncher extends Thread {
 			l.enemyLaunchMissile(id, missileId, destination, damage);
 		}
 		statistics.increaseNumOfLaunchMissiles();
+		theLogger.log(Level.INFO, id +"\tlaunch: " + missileId + "\tdestination: " + destination  + "\n");
 	}
 	
 	public void registerListeners(WarEventListener listener){
