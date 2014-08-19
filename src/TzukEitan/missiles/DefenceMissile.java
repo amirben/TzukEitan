@@ -2,6 +2,9 @@ package TzukEitan.missiles;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import TzukEitan.listeners.WarEventListener;
 import TzukEitan.war.WarStatistics;
 
@@ -14,9 +17,11 @@ public class DefenceMissile extends Thread {
 	private EnemyMissile missileToDestroy;
 	private WarStatistics statistics;
 	private final int LAUNCH_DURATION = 2000;
+	private static Logger theLogger = Logger.getLogger("myLogger");
 	
 	public DefenceMissile(String id, EnemyMissile missileToDestroy, String whoLunchedMeId, List<WarEventListener> allListeners, WarStatistics statistics){
 		allListeners = new LinkedList<WarEventListener>();
+		
 		this.id = id;
 		this.missileToDestroy = missileToDestroy;
 		this.whoLunchedMeId = whoLunchedMeId;
@@ -42,7 +47,7 @@ public class DefenceMissile extends Thread {
 			
 		}catch(InterruptedException ex){
 			//TODO add logger
-			System.out.println("Thred.sleep in EnemyMissile EROR");
+			System.out.println(ex.getStackTrace());
 		}
 	}
 	
@@ -55,6 +60,7 @@ public class DefenceMissile extends Thread {
 			l.defenseHitInterceptionMissile(whoLunchedMeId, id, missileToDestroy.getMissileId());
 		}
 		statistics.increaseNumOfInterceptMissiles();
+		theLogger.log(Level.INFO,whoLunchedMeId +":\t" + missileToDestroy.getMissileId() + "\tSucces");
 		
 	}
 	
@@ -62,12 +68,11 @@ public class DefenceMissile extends Thread {
 		for (WarEventListener l : allListeners) {
 			l.defenseMissInterceptionMissile(whoLunchedMeId, id, missileToDestroy.getMissileId());
 		}
+		theLogger.log(Level.INFO,whoLunchedMeId +":\t" + missileToDestroy.getMissileId() + "\tFail: " + missileToDestroy.getDamage());
 	}
 	
 	public void registerListeners(WarEventListener listener){
 		allListeners.add(listener);
 	}
-
-
 	
 }

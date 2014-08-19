@@ -1,15 +1,18 @@
 package TzukEitan.launchers;
 
-
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Filter;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import TzukEitan.listeners.WarEventListener;
 import TzukEitan.missiles.EnemyMissile;
+import TzukEitan.utils.WarFormater;
 import TzukEitan.war.WarControl;
 import TzukEitan.war.WarStatistics;
-
-//TODO logger & Syso
 
 
 public class EnemyLauncher extends Thread {
@@ -26,19 +29,22 @@ public class EnemyLauncher extends Thread {
 	private static int missleIdGen;
 	private final int LAUNCH_DURATION = 2000;
 	private WarControl control;
+	private static Logger theLogger = Logger.getLogger("warLogger");
     	
-	public EnemyLauncher(String id, boolean isHidden, WarControl control, WarStatistics statistics) {
-		allListeners = new LinkedList<WarEventListener>(); 
+	public EnemyLauncher(String id, boolean isHidden, WarControl control, WarStatistics statistics) throws IOException {
 		this.id = id;
 		this.isHidden = isHidden;
-		firstHiddenState = isHidden;
-		missleIdGen = 100;
 		this.control = control;
 		this.statistics = statistics;
+
+		allListeners = new LinkedList<WarEventListener>(); 
+		firstHiddenState = isHidden;
+		missleIdGen = 100;
+
+		addLoggerHandler();
 	}
 
-	public void run() {
-		
+	public void run() {	
 		while(!beenHit){
 			synchronized (this) {
 				try{
@@ -53,9 +59,26 @@ public class EnemyLauncher extends Thread {
 					//not needed because the DefenseDestructorMissile call this event
 				}
 			}	
+			currentMissile = null;
 		}
 	}
 
+	private void addLoggerHandler() throws IOException {
+		FileHandler personHandler;
+		personHandler = new FileHandler("Launcher:" + id + "Logger.xml", false);
+		personHandler.setFilter(new Filter() {
+			public boolean isLoggable(LogRecord rec) {
+				if (rec.getMessage().contains(id))
+					return true;
+				return false;
+				//TODO use getParameters();
+			}
+		});
+		personHandler.setFormatter(new WarFormater());
+		
+		theLogger.addHandler(personHandler);
+	}
+	
 	public void setDamage(int damage){
 		this.damage = damage;
 	}
@@ -64,7 +87,8 @@ public class EnemyLauncher extends Thread {
 		this.destination = dest;
 	}
 	
-	public boolean launchMissile() throws InterruptedException{
+	//may need synchronized
+	public void launchMissile() throws InterruptedException{
 		//TODO logger
 		
 		currentMissile = createMissile();
@@ -84,8 +108,6 @@ public class EnemyLauncher extends Thread {
 		isHidden = firstHiddenState;
 		
 		currentMissile.join();	
-
-		return true;
 	}
 	
 	public void fireLaunchMissileEvent(String missileId){
@@ -119,5 +141,11 @@ public class EnemyLauncher extends Thread {
 	public boolean getIsHidden(){
 		return isHidden;
 	}
-
+	
+	public EnemyMissile getCurrentMissile(){
+		if(currentMissile != null && currentMissile.isAlive())
+			return currentMissile;
+		
+		return null;
+	}
 }

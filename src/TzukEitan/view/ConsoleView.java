@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import TzukEitan.listeners.WarEventUIListener;
+import TzukEitan.utils.Utils;
 
 public class ConsoleView {
 	private List<WarEventUIListener> allListeners;
@@ -90,49 +91,120 @@ public class ConsoleView {
 		}
 	}
 
-	private void fireFinishWar() {
-		LocalDateTime ldt = LocalDateTime.now();
-		DateTimeFormatter dtf = DateTimeFormatter
-				.ofPattern("dd/MM/yyyy HH:mm:ss");
-
-		System.out.println("==> The War is OVER at: " + ldt.format(dtf));
+	/* User commands */
+	private void fireAddDefenseLauncherDestractor() {
+		System.out.println("Please choose between Plane or Ship, for exit press enter");
+		String type = scanner.nextLine();
+		type = type.toLowerCase();
+		
+		if (type.equals("plane") || type.equals("ship"))
+			for (WarEventUIListener l : allListeners)
+				l.addDefenseLauncherDestractor(type);
 	}
-
-	private void fireShowStatistics() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void fireInterceptMissile() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void fireInterceptMissileLauncher() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void fireAddEnemyMissile() {
-		// TODO Auto-generated method stub
-
+	
+	private void fireAddDefenseIronDome() {
+		for (WarEventUIListener l : allListeners)
+			l.addIronDome();
 	}
 
 	private void fireAddEnemyLauncher() {
-		// TODO Auto-generated method stub
-
+		for (WarEventUIListener l : allListeners)
+			l.addEnemyLauncher();
+	}
+	
+	private void fireAddEnemyMissile() {
+		String[] launcersId;
+		String launcer;
+		
+		for (WarEventUIListener l : allListeners){
+			launcersId = l.showAllLaunchers();
+			
+			if (launcersId != null){
+				System.out.println("Launcer to launch with:");
+			
+				for (int i = 0 ; i < launcersId.length ; i++)
+					System.out.println("\t" + (i+1) + ")" + launcersId[i]);
+					
+				System.out.println("Wrtie launcer id to equip, else press enter to continue");
+				launcer = scanner.nextLine();
+				
+				if (!launcer.equals("")){
+					System.out.println("Enter destination to destory:");
+					String destination = scanner.nextLine();
+					l.addEnemyMissile(destination);
+				}
+			}
+			else
+				System.out.println("Ther is no launcer yet, please add launcher first");
+			
+		}
 	}
 
-	private void fireAddDefenseIronDome() {
-		// TODO Auto-generated method stub
-
+	private void fireInterceptMissileLauncher() {
+		String launcersId[];
+		String launcer;
+		
+		for (WarEventUIListener l : allListeners){
+			launcersId = l.chooseLauncherToIntercept();
+			
+			if (launcersId !=null){
+				System.out.println("Launcer to intercept:");
+				
+				for (int i = 0 ; i < launcersId.length; i++)
+					System.out.println("\t" + (i+1) + ")" + launcersId[i]);
+					
+				System.out.println("Choose launcer id to intercept, else press enter to continue");
+				launcer = scanner.nextLine();
+				
+				if (!launcer.equals(""))
+					l.interceptGivenLauncher(launcer);
+			}
+			else 
+				System.out.println("There is no missiles to intercept!");
+		}	
 	}
 
-	private void fireAddDefenseLauncherDestractor() {
-		// TODO Auto-generated method stub
+	private void fireInterceptMissile() {
+		String[] missilesId;
+		String missile;
 
+		for (WarEventUIListener l : allListeners) {
+			missilesId = l.chooseMissileToIntercept();
+
+			if (missilesId != null) {
+				System.out.println("Missiles to intercept:");
+				for (int i = 0; i < missilesId.length; i++)
+					System.out.println("\t" + (i + 1) + ")" + missilesId[i]);
+
+				System.out.println("Choose missile id to intercept, else press enter to continue");
+				missile = scanner.nextLine();
+				
+				if (!missile.equals(""))
+					l.interceptGivenMissile(missile);
+			}
+			else 
+				System.out.println("There is no missiles to intercept!");
+		}
+	}
+	
+
+	private void fireShowStatistics() {
+		for (WarEventUIListener l : allListeners)
+			l.showStatistics();
 	}
 
+	private void fireFinishWar() {
+//		LocalDateTime ldt = LocalDateTime.now();
+//		DateTimeFormatter dtf = DateTimeFormatter
+//				.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+		for (WarEventUIListener l : allListeners)
+			l.finishWar();
+		
+		System.out.println("==> The War is OVER at: " + Utils.getCurrentTime());
+	}
+
+	/* Prints to screen event from controller */
 	public void showDefenseLaunchMissile(String MunitionsId, String missileId,
 			String enemyMissileId) {
 		System.out.println("Iron dome: " + MunitionsId

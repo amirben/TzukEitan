@@ -1,27 +1,38 @@
 package TzukEitan.launchers;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Filter;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import TzukEitan.listeners.WarEventListener;
 import TzukEitan.missiles.DefenceMissile;
 import TzukEitan.missiles.EnemyMissile;
+import TzukEitan.utils.Utils;
+import TzukEitan.utils.WarFormater;
 import TzukEitan.war.WarStatistics;
 
 public class IronDome extends Thread {
 	private List<WarEventListener> allListeners;
-	
 	private EnemyMissile toDestroy;
-	private static int missleIdGen;
 	private String id;
 	private WarStatistics statistics;
 	private boolean isRunning = true;
+	private static int missleIdGen;
+	private boolean isBusy = false;
+	private static Logger theLogger = Logger.getLogger("warLogger");
 	
-	public IronDome(String id, WarStatistics statistics) {
+	public IronDome(String id, WarStatistics statistics) throws IOException {
 		allListeners = new LinkedList<WarEventListener>(); 
-		this.id = id;
 		missleIdGen = 100;
 		this.statistics = statistics;
+		this.id = id;
+		
+		addLoggerHandler();
 	}
 
 	public void run() {
@@ -40,21 +51,35 @@ public class IronDome extends Thread {
 				}
 			}
 		}
-		//TODO close thread correctly
+		//TODO close thread correctly maybe throw exception
+	}
+	
+	private void addLoggerHandler() throws IOException {
+		FileHandler personHandler;
+		personHandler = new FileHandler("Iron dome:" + id + "Logger.xml", false);
+		personHandler.setFilter(new Filter() {
+			public boolean isLoggable(LogRecord rec) {
+				if (rec.getMessage().contains(id))
+					return true;
+				return false;
+			}
+		});
+		personHandler.setFormatter(new WarFormater());
+		
+		theLogger.addHandler(personHandler);
 	}
 
 	public void setMissileToDestroy(EnemyMissile toDestroy){
 		this.toDestroy = toDestroy;
 	}
 	
-	public boolean launchMissile() {
+	public void launchMissile() throws InterruptedException {
 		String missieId = idGenerator();
 		DefenceMissile missile = new DefenceMissile(missieId , toDestroy, id, allListeners, statistics);
 		
 		fireLaunchMissileEvent(missile.getMissileId());
 		missile.start();
-		
-		return true;
+		missile.join();
 	}
 	
 	public void fireLaunchMissileEvent(String missileId){
@@ -74,5 +99,9 @@ public class IronDome extends Thread {
 	
 	public void stopRunningIronDome(){
 		isRunning = false; 
+	}
+	
+	public boolean getIsBusy(){
+		return isBusy;
 	}
 }

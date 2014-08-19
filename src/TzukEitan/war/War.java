@@ -11,20 +11,81 @@ import TzukEitan.missiles.EnemyMissile;
 
 public class War implements Runnable {
 	
-	private Scanner input = new Scanner (System.in);
 	private ArrayList<IronDome> ironDomeArr = new ArrayList<IronDome>();
 	private ArrayList<LauncherDestractor> launcherDestractorArr = new ArrayList<LauncherDestractor>();
 	private ArrayList<EnemyLauncher> EnemyLauncherArr = new ArrayList<EnemyLauncher>();
-
+	private boolean isRunning = true;
+	private WarStatistics statistics;
+	
 	public War(){
+		statistics = new WarStatistics();
+	}
+	
+	public void run() {
+		while(isRunning){
+					
+		}
+		//TODO finish thread properly
+		//TODO THROW EVENT OF START AND STOP WAR
 		
 	}
 	
-	@Override
-	public void run() {
-		//while(true)
-		manageMenu();
+	public void finishWar(){
+		isRunning = false;
+	}
+	
+	public WarStatistics getStatistics(){
+		return statistics;
+	}
+	
+	public String[] getAllDuringFlyMissilesId(){
+		ArrayList<String> missileIds = new ArrayList<>();
 		
+		for(EnemyLauncher el: EnemyLauncherArr){
+			if(el.getCurrentMissile() != null)
+				missileIds.add(el.getCurrentMissile().getMissileId());
+		}
+		return (String[]) missileIds.toArray();
+	}
+	
+	public void interceptGivenMissile(String missileId){
+		EnemyMissile missileToDestroy;
+		for(EnemyLauncher el: EnemyLauncherArr){
+			missileToDestroy = el.getCurrentMissile();
+			if(missileToDestroy != null && missileToDestroy.getMissileId().equals(missileId)){
+				IronDome dome = findFreeIronDome();
+				dome.setMissileToDestroy(missileToDestroy);
+				dome.notify();
+			}
+		}
+	}
+	
+	public void interceptGivenLauncher(String launcherId){
+		for(EnemyLauncher el: EnemyLauncherArr){
+			if(el.getLauncherId().equals(launcherId) && el.isAlive()){
+				LauncherDestractor ld = findFreeDestructor();
+				ld.setEnemyLauncherToDestroy(el);
+				ld.notify();
+			}
+		}
+	}
+	
+	public IronDome findFreeIronDome(){
+		for(IronDome ironDome : ironDomeArr){
+			if(!ironDome.getIsBusy())
+				return ironDome;
+		}
+		//wait until on of the dome is free...
+		return null;
+	}
+	
+	public LauncherDestractor findFreeDestructor(){
+		for(LauncherDestractor ld : launcherDestractorArr){
+			if(!ld.getIsBusy())
+				return ld;
+		}
+		//wait until on of the dome is free...
+		return null;
 	}
 	
 	public void registerListenerts(WarControl control){
@@ -39,7 +100,7 @@ public class War implements Runnable {
 	}
 	
 	
-	
+	/*
 	public void manageMenu(){
 		showMenu();
 		int choise = input.nextInt();
@@ -99,7 +160,7 @@ public class War implements Runnable {
 	}
 	
 	/**Create new Iron Dome**/
-	public void newIronDome(){
+	/*public void newIronDome(){
 		int missileNum;
 		IronDome ironDome = new IronDome(idGenerator('D'), new MissileComparator());
 		System.out.println("How many missiles do you want to add?");
@@ -112,7 +173,7 @@ public class War implements Runnable {
 	}
 	
 	/**Create new enemy launcher**/
-	public void newLauncher(){
+	/*public void newLauncher(){
 		int missileNum;
 		EnemyLauncher enemyLauncher = new EnemyLauncher(idGenerator('L'), new MissileComparator());
 		System.out.println("How many missiles do you want to add?");
@@ -126,7 +187,7 @@ public class War implements Runnable {
 	
 	
 	/**enemy fire a misslie**/
-	public void launchMissile(){
+	/*public void launchMissile(){
 		
 		//TODO run on the EnemyLaunchers and find a free one
 		
@@ -158,6 +219,6 @@ public class War implements Runnable {
 		showStatistics();
 		//TODO end the war
 	}
-
+	*/
 
 }

@@ -2,13 +2,14 @@ package TzukEitan.missiles;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import TzukEitan.listeners.WarEventListener;
+import TzukEitan.utils.Utils;
 import TzukEitan.war.WarStatistics;
 
-
 //TODO logger & Syso
-
-
 public class EnemyMissile extends Thread {
 	private List<WarEventListener> allListeners;
 	
@@ -18,8 +19,10 @@ public class EnemyMissile extends Thread {
 	private int flyTime;
 	private int damage;
 	private WarStatistics statistics;
+	private String launchTime;
 	private boolean beenHit = false;
-	
+	private static Logger theLogger = Logger.getLogger("myLogger");
+
 	public EnemyMissile (String id, String destination, int flyTime, int damage, String whoLaunchedMeId, List<WarEventListener> allListeners, WarStatistics statistics){
 		allListeners = new LinkedList<WarEventListener>();
 		
@@ -33,20 +36,20 @@ public class EnemyMissile extends Thread {
 	}
 	
 	public void run() {
-		//NEED to fire event that start flying, if success 
-		//throw event of succes!!!
+		launchTime = Utils.getCurrentTime();
+		
 		try{
 			Thread.sleep(flyTime * 1000);
-			//fireHitEvent();
-			
+		
 		//Interrupt is thrown when Enemy missile has been hit. 
 		}catch(InterruptedException ex){
 			//this event was already being thrown by the missile who hit this missile.
+			theLogger.log(Level.INFO, whoLaunchedMeId +":\t" + destination + "\tlaunch time: " + launchTime +"\tinterception time: " + Utils.getCurrentTime() + "\tintercepted");
 			beenHit = true;
 		}
-		if (beenHit)
-			fireHitEvent();
 		
+		if (!beenHit)
+			fireHitEvent();
 	}
 		
 	public void fireHitEvent(){
@@ -55,6 +58,7 @@ public class EnemyMissile extends Thread {
 		}
 		statistics.increaseNumOfHitTargetMissiles();
 		statistics.increaseTotalDamage(damage);
+		theLogger.log(Level.INFO,whoLaunchedMeId +":\t" + destination + "\tlaunch time: " + launchTime +"\tland time: " + Utils.getCurrentTime() + "\tHit - damage: " + damage);
 	}
 	
 	public void registerListeners(WarEventListener listener){
@@ -63,6 +67,10 @@ public class EnemyMissile extends Thread {
 
 	public String getMissileId(){
 		return id;
+	}
+	
+	public int getDamage(){
+		return damage;
 	}
 
 }
