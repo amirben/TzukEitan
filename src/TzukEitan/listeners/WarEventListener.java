@@ -37,5 +37,11 @@ public interface WarEventListener {
 	
 	/**Announce when the war starts**/
 	public void warHasBeenStarted();
+
+	/**Will occur when ship/plane/iron dome is not found in war**/
+	public void noSuchObject(String type);
+	
+	/**Wait for order from controller and view**/
+	public void waitForOrder();
 	
 }

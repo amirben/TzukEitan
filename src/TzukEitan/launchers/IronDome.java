@@ -103,4 +103,8 @@ public class IronDome extends Thread {
 	public boolean getIsBusy(){
 		return isBusy;
 	}
+
+	public String getIronDomeId() {
+		return id;
+	}
 }

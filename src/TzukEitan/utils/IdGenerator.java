@@ -17,7 +17,7 @@ public class IdGenerator {
 	}
 	
 	public static String defenseLauncherDestractorIdGenerator(char type){
-		return  "" + type + defenseLauncherDestractorId++;
+		return  ("" + type).toUpperCase() + defenseLauncherDestractorId++;
 	}
 
 	public static String enemyMissileIdGenerator() {

@@ -87,19 +87,29 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 	}
 
 	@Override
-	public void interceptGivenMissile(String id) {
-		warModel.interceptGivenMissile(id);
+	public void interceptGivenMissile(String ironDomeId, String missileId) {
+		warModel.interceptGivenMissile(ironDomeId, missileId);
 	}
 
+	@Override
+	public void interceptGivenMissile(String missileId) {
+		warModel.interceptGivenMissile(missileId);
+	}
+	
+	@Override
+	public void interceptGivenLauncher(String launcherId) {
+		warModel.interceptGivenLauncher(launcherId);
+	}
+
+	@Override
+	public void interceptGivenLauncher(String destructorId, String launcherId) {
+		warModel.interceptGivenLauncher(destructorId,launcherId);
+	}
+	
 	@Override
 	public String[] chooseLauncherToIntercept() {
 		String ids[] = warModel.getAllVisibleLaunchersIds();
 		return ids;
-	}
-
-	@Override
-	public void interceptGivenLauncher(String id) {
-		warModel.interceptGivenLauncher(id);
 	}
 
 	@Override
@@ -114,29 +124,33 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 	}
 
 	@Override
-	public void addEnemyLauncher(String launcherId, boolean isHidden) {
-		warModel.addEnemyLauncher(launcherId, isHidden);
+	public String addEnemyLauncher(String launcherId, boolean isHidden) {
+		String id = warModel.addEnemyLauncher(launcherId, isHidden);
+		return id;
 	}
 	
 	@Override
-	public void addEnemyLauncher() {
-		warModel.addEnemyLauncher();
+	public String addEnemyLauncher() {
+		String id = warModel.addEnemyLauncher();
+		return id;
 	}
 
 	@Override
-	public void addIronDome() {
-		warModel.addIronDome();
+	public String addIronDome() {
+		String id = warModel.addIronDome();
+		return id;
 	}
 	
 	@Override
-	public void addIronDome(String id) {
-		warModel.addIronDome(id);
-		
+	public String addIronDome(String id) {
+		String iId = warModel.addIronDome(id);
+		return iId;
 	}
 
 	@Override
-	public void addDefenseLauncherDestractor(String type) {
-		warModel.addDefenseLauncherDestractor(type);
+	public String addDefenseLauncherDestractor(String type) {
+		String id = warModel.addDefenseLauncherDestractor(type);
+		return id;
 	}
 
 	@Override
@@ -153,6 +167,16 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 	@Override
 	public void warHasBeenStarted() {
 		view.showWarHasBeenStarted();
+	}
+
+	@Override
+	public void noSuchObject(String type) {
+		view.showNoSuchObject(type);
+	}
+
+	@Override
+	public void waitForOrder() {
+		view.selectUserChoiseMethod();
 	}
 
 

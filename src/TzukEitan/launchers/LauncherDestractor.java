@@ -110,5 +110,9 @@ public class LauncherDestractor extends Thread {
 	public boolean getIsBusy(){
 		return isBusy;
 	}
+	
+	public String getDestructorId(){
+		return id;
+	}
 }
 

@@ -13,11 +13,17 @@ public interface WarEventUIListener {
 	/**Will try to intercept given missile id**/
 	public void interceptGivenMissile(String id);
 	
+	/**Used for xml**/
+	void interceptGivenMissile(String ironDomeId, String missileId);
+	
 	/**Ask for current launcher that are not hidden**/
 	public String[] chooseLauncherToIntercept();
 	
 	/**Will try to intercept given launcher id**/
 	public void interceptGivenLauncher(String id);
+	
+	/**Used for xml**/
+	void interceptGivenLauncher(String destructorId, String launcherId);
 	
 	/**User will select from which launcher he would like to launch missile**/
 	public String[] showAllLaunchers();
@@ -26,21 +32,25 @@ public interface WarEventUIListener {
 	public void addEnemyMissile(String launcherId, String destination, int damage);
 	
 	/**Add enemy launcher**/
-	public void addEnemyLauncher();
+	public String addEnemyLauncher();
 	
 	/**Add enemy launcher from xml**/
-	public void addEnemyLauncher(String launcherId, boolean isHidden);
+	public String addEnemyLauncher(String launcherId, boolean isHidden);
 	
 	/**Add defense Iron Dome**/
-	public void addIronDome();
+	public String addIronDome();
 	
 	/**Add plane or ship**/
-	public void addDefenseLauncherDestractor(String type);
+	public String addDefenseLauncherDestractor(String type);
 
 	/**Add defense Iron Dome from xml**/
-	public void addIronDome(String id);
+	public String addIronDome(String id);
 	
 	/**Returns all war city targets**/
 	public String[] getAllWarDestinations();
+
+	
+
+	
 }
 

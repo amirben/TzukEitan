@@ -289,4 +289,8 @@ public class ConsoleView {
 	public void showWarHasBeenStarted(){
 		System.out.println("=========>> War has been strated!!! <<=========");
 	}
+
+	public void showNoSuchObject(String type) {
+		System.out.println("Cannot find " + type + " you selected in war");
+	}
 }
