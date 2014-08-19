@@ -16,7 +16,7 @@ public class TzukEitan {
 		War warModel = new War();
 		
 		WarControl warControl = new WarControl(warModel, view);
-		warModel.start();
+		
 		
 		try {
 			WarXMLReader warXML = new WarXMLReader("warStart.xml", warControl);
@@ -28,10 +28,8 @@ public class TzukEitan {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	
 		
-		
-
+		//warModel.start();
 	}
 
 }

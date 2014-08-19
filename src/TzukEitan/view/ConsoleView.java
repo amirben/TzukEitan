@@ -9,8 +9,9 @@ import TzukEitan.utils.Utils;
 
 public class ConsoleView {
 	private List<WarEventUIListener> allListeners;
-	private Scanner input;
-
+	private Scanner input = new Scanner(System.in);
+	private StringBuilder menu = new StringBuilder(1000);
+	
 	public ConsoleView() {
 		allListeners = new LinkedList<WarEventUIListener>();
 		createMenu();
@@ -145,8 +146,6 @@ public class ConsoleView {
 			
 		}
 	}
-
-	private StringBuilder menu = new StringBuilder(1000);
 
 	private void fireInterceptEnemyLauncher() {
 		String launcersId[];

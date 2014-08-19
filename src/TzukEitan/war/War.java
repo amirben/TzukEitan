@@ -43,9 +43,9 @@ public class War extends Thread{
 		fireWarHasBeenStarted();
 		
 		while(isRunning){
-			//fireWaitForOrder();	
+			fireWaitForOrder();	
 			try {
-				sleep(100000);
+				sleep(5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -245,6 +245,7 @@ public class War extends Thread{
 		EnemyLauncher launcher = new EnemyLauncher(launcherId, isHidden, statistics);
 		launcher.registerListeners(allListeners.get(0));
 		
+		launcher.start();
 		enemyLauncherArr.add(launcher);
 		
 		return launcherId;
@@ -253,6 +254,7 @@ public class War extends Thread{
 	public String addEnemyLauncher(){
 		String id = IdGenerator.enemyLauncherIdGenerator();
 		boolean isHidden = Math.random()<0.5;
+		
 		
 		addEnemyLauncher(id, isHidden);
 		
@@ -263,6 +265,7 @@ public class War extends Thread{
 		IronDome ironDome = new IronDome(id, statistics);
 		ironDome.registerListeners(allListeners.get(0));
 		
+		ironDome.start();
 		ironDomeArr.add(ironDome);
 		
 		return id;
@@ -278,7 +281,10 @@ public class War extends Thread{
 	public String addDefenseLauncherDestractor(String type) {
 		String id = IdGenerator.defenseLauncherDestractorIdGenerator(type.charAt(0));
 		LauncherDestractor destructor = new LauncherDestractor(type, id, statistics);
+		
 		destructor.registerListeners(allListeners.get(0));
+		
+		destructor.start();
 		launcherDestractorArr.add(destructor);
 		
 		return id;
