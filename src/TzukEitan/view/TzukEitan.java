@@ -1,3 +1,10 @@
+/*
+ * Made by:
+ * Guy Eshel
+ * &
+ * Ben Amir
+ */
+
 package TzukEitan.view;
 
 import java.io.IOException;
@@ -12,24 +19,31 @@ import TzukEitan.war.WarControl;
 public class TzukEitan {
 
 	public static void main(String[] args) {
+		WarXMLReader warXML;
+
 		ConsoleView view = new ConsoleView();
 		War warModel = new War();
-		
+
 		WarControl warControl = new WarControl(warModel, view);
-		
-		
+
 		try {
-			WarXMLReader warXML = new WarXMLReader("warStart.xml", warControl);
+			warXML = new WarXMLReader("warStart.xml", warControl);
 			warXML.start();
+
+			warXML.join();
+
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		
-		//warModel.start();
+
+		warModel.start();
+		view.start();
 	}
 
 }

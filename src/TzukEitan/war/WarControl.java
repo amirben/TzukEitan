@@ -1,12 +1,14 @@
 package TzukEitan.war;
 
+import java.util.Vector;
+
 import TzukEitan.listeners.WarEventListener;
 import TzukEitan.listeners.WarEventUIListener;
 import TzukEitan.view.ConsoleView;
+import TzukEitan.view.WarXMLReader;
 
 
 public class WarControl implements WarEventListener, WarEventUIListener{
-
 	private War warModel;
 	private ConsoleView view;
 	
@@ -17,7 +19,8 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 		warModel.registerListenerts(this);
 		view.registerListeners(this);
 	}
-
+	
+	//Method that related to the view
 	@Override
 	public void defenseLaunchMissile(String myMunitionsId, String missileId, String enemyMissileId) {
 		view.showDefenseLaunchMissile(myMunitionsId,missileId,enemyMissileId);
@@ -34,18 +37,12 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 	}
 
 	@Override
-	public void enemyLauncherIsHidden(String id) {
-		view.showLauncherIsHidden(id);
-		
+	public void enemyLauncherIsVisible(String id,boolean visible) {
+		view.showLauncherIsVisible(id,visible);
 	}
 
 	@Override
-	public void enemyLauncherIsVisible(String id) {
-		view.showLauncherIsVisible(id);
-	}
-
-	@Override
-	public void defenseMissInterceptionMissile(String whoLaunchedMeId, String missileId, String enemyMissileId) {
+	public void defenseMissInterceptionMissile(String whoLaunchedMeId, String missileId, String enemyMissileId, int damage) {
 		view.showMissInterceptionMissile(whoLaunchedMeId, missileId, enemyMissileId);
 	}
 
@@ -55,7 +52,7 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 	}
 
 	@Override
-	public void enemyHitDestination(String whoLaunchedMeId, String missileId, String destination, int damage) {
+	public void enemyHitDestination(String whoLaunchedMeId, String missileId, String destination, int damage, String launchTime) {
 		view.showEnemyHitDestination(whoLaunchedMeId, missileId, destination, damage);
 	}
 
@@ -63,26 +60,38 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 	public void defenseMissInterceptionLauncher(String whoLaunchedMeId,	String type, String missileId, String enemyLauncherId) {
 		view.showMissInterceptionLauncher(whoLaunchedMeId,type, enemyLauncherId, missileId);
 	}
-
+	
+	@Override
+	public void defenseMissInterceptionHiddenLauncher(String whoLaunchedMeId, String type, String enemyLauncherId) {
+		view.showMissInterceptionHiddenLauncher(whoLaunchedMeId,type, enemyLauncherId);
+	}
+	
 	@Override
 	public void defenseHitInterceptionLauncher(String whoLaunchedMeId, String type, String missileId, String enemyLauncherId) {
 		view.showHitInterceptionLauncher(whoLaunchedMeId, type, enemyLauncherId, missileId);
 	}
-
+	
+	//Methods related to the model
 	@Override
 	public void finishWar() {
-		warModel.finishWar();
+		WarXMLReader.stopAllThreads();
+		//warModel.finishWar();
+		
+		//notify the war
+		synchronized (warModel) {
+			warModel.notify();
+		}
 	}
 
 	@Override
 	public void showStatistics() {
 		WarStatistics statistics = warModel.getStatistics();
-		view.showStatistics(statistics.toArray());	
+		view.showStatistics(statistics.statisticsToArray());	
 	}
 
 	@Override
-	public String[] chooseMissileToIntercept() {
-		String[] ids = warModel.getAllDuringFlyMissilesIds();
+	public Vector<String> chooseMissileToIntercept() {
+		Vector<String> ids = warModel.getAllDuringFlyMissilesIds();
 		return ids;
 	}
 
@@ -107,20 +116,20 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 	}
 	
 	@Override
-	public String[] chooseLauncherToIntercept() {
-		String ids[] = warModel.getAllVisibleLaunchersIds();
+	public Vector<String> chooseLauncherToIntercept() {
+		Vector<String> ids = warModel.getAllVisibleLaunchersIds();
 		return ids;
 	}
 
 	@Override
-	public String[] showAllLaunchers() {
-		String ids[] = warModel.getAllLaunchersIds();
+	public Vector<String> showAllLaunchers() {
+		Vector<String> ids = warModel.getAllLaunchersIds();
 		return ids;
 	}
 
 	@Override
-	public void addEnemyMissile(String launcherId, String destination, int damage) {
-		warModel.launchEnemyMissile(launcherId, destination, damage);
+	public void addEnemyMissile(String launcherId, String destination, int damage, int flyTime) {
+		warModel.launchEnemyMissile(launcherId, destination, damage, flyTime);
 	}
 
 	@Override
@@ -148,8 +157,8 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 	}
 
 	@Override
-	public String addDefenseLauncherDestractor(String type) {
-		String id = warModel.addDefenseLauncherDestractor(type);
+	public String addDefenseLauncherDestructor(String type) {
+		String id = warModel.addDefenseLauncherDestructor(type);
 		return id;
 	}
 
@@ -175,7 +184,13 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 	}
 
 	@Override
-	public void waitForOrder() {
-		view.selectUserChoiseMethod();
+	public void missileNotExist(String defenseLauncherId, String enemyId) {
+		view.showMissileNotExist(defenseLauncherId, enemyId);
+	}
+
+	@Override
+	public void enemyMissDestination(String whoLaunchedMeId, String id,
+			String destination, String launchTime) {
+		view.showEnemyMissDestination(whoLaunchedMeId, id, destination, launchTime);
 	}
 }

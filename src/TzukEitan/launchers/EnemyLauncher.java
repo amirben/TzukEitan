@@ -5,157 +5,184 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Filter;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import TzukEitan.listeners.WarEventListener;
 import TzukEitan.missiles.EnemyMissile;
 import TzukEitan.utils.IdGenerator;
+import TzukEitan.utils.Utils;
 import TzukEitan.utils.WarFormater;
-import TzukEitan.war.WarControl;
 import TzukEitan.war.WarStatistics;
-
 
 public class EnemyLauncher extends Thread {
 	private List<WarEventListener> allListeners;
-	
-	private boolean beenHit = false;
-	private boolean isHidden;
-	private boolean firstHiddenState;
+
 	private String id;
 	private String destination;
 	private int damage;
-	private EnemyMissile currentMissile;
+	private int flyTime;
+	private boolean isHidden;
+	private boolean firstHiddenState;
+	private boolean beenHit = false;
 	private WarStatistics statistics;
-	private final int LAUNCH_DURATION = 2000;
+	private EnemyMissile currentMissile;
+
 	private static Logger theLogger = Logger.getLogger("warLogger");
-    	
-	public EnemyLauncher(String id, boolean isHidden, WarStatistics statistics){
+	private FileHandler enemyLauncherHandler;
+
+	public EnemyLauncher(String id, boolean isHidden, WarStatistics statistics) {
 		this.id = id;
 		this.isHidden = isHidden;
 		this.statistics = statistics;
 
-		allListeners = new LinkedList<WarEventListener>(); 
+		allListeners = new LinkedList<WarEventListener>();
 		firstHiddenState = isHidden;
-		
+
 		addLoggerHandler();
 	}
 
-	public void run() {	
-		while(!beenHit){
+	public void run() {
+		// this thread will be alive until he will be hit
+		while (!beenHit) {
 			synchronized (this) {
-				try{
-					//Wait until user want to fire a missile
+				try {
+					// Wait until user want to fire a missile
 					wait();
-					launchMissile();	
-				}	
-				//Exception is called when launcher has been hit
-				catch(InterruptedException ex){
-					stopEnemyLaucher();
-					//firehasBeenHitEvent() ==> not needed because
-					//the DefenseDestructorMissile call this event
-				}
-			}	
-			currentMissile = null;
-		}
-	}
 
-	private void addLoggerHandler(){
-		FileHandler personHandler;
+					launchMissile();
+				}
+				// Exception is called when launcher has been hit
+				catch (InterruptedException ex) {
+					// firehasBeenHitEvent() ==> not needed because
+					// the DefenseDestructorMissile call this event
+					stopEnemyLaucher();
+				}
+			}// synchronized
+
+			// update that this launcher is not in use
+			currentMissile = null;
+
+		}// while
+
+		// close the handler of the logger
+		enemyLauncherHandler.close();
+	}// run
+
+	private void addLoggerHandler() {
 		try {
-			personHandler = new FileHandler("Launcher" + id + "Logger.xml", true);
-			personHandler.setFilter(new Filter() {
+			enemyLauncherHandler = new FileHandler("log\\Launcher" + id
+					+ "Logger.xml", false);
+
+			enemyLauncherHandler.setFilter(new Filter() {
 				public boolean isLoggable(LogRecord rec) {
 					if (rec.getMessage().contains(id))
 						return true;
 					return false;
-					//TODO use getParameters();
 				}
-			});
-			personHandler.setFormatter(new WarFormater());
-			
-			theLogger.addHandler(personHandler);
-			
-		}catch (IOException e) {
+			});// add filter
+
+			enemyLauncherHandler.setFormatter(new WarFormater());
+
+			theLogger.addHandler(enemyLauncherHandler);
+
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}// addLoggerHandler
 
-	}
-	
-	public void setMissileInfo(String destination, int damage){
+	// setting the next missile the user want to launch
+	public void setMissileInfo(String destination, int damage, int flyTime) {
 		this.destination = destination;
 		this.damage = damage;
+		this.flyTime = flyTime;
 	}
-	
-	public void setDamage(int damage){
-		this.damage = damage;
-	}
-	
-	public void setDestination(String dest){
-		this.destination = dest;
-	}
-	
-	//may need synchronized
-	public void launchMissile() throws InterruptedException{
-		//TODO logger
-		
-		currentMissile = createMissile();
-		
-		fireLaunchMissileEvent(currentMissile.getMissileId());
-		
-		//Missile isn't hiding when launching a missile
+
+	// launch missile with given parameters
+	public void launchMissile() throws InterruptedException {
+		createMissile();
+
+		// Missile isn't hidden when launching a missile
 		isHidden = false;
-		
-		//It's take time to launch missile
-		sleep(LAUNCH_DURATION);
+		if (firstHiddenState)
+			// throw event if he was hidden
+			fireEnemyLauncherIsVisibleEvent(true);
+
+		// It's take time to launch missile
+		sleep(Utils.LAUNCH_DURATION);
+
+		// throw event
+		fireLaunchMissileEvent(currentMissile.getMissileId());
+
 		currentMissile.start();
-		
-		//X time that the launcher is not hidden:
-		int x = (int) Math.random() * 5000;
+
+		// X time that the launcher is not hidden:
+		int x = flyTime * Utils.SECOND;
 		sleep(x);
+
+		// returning the first hidden state:
 		isHidden = firstHiddenState;
-		
-		currentMissile.join();	
+		if (firstHiddenState)
+			// throw event if he is back to be hidden
+			fireEnemyLauncherIsVisibleEvent(false);
+
+		// wait until the missile will finish
+		currentMissile.join();
 	}
-	
-	public void fireLaunchMissileEvent(String missileId){
+
+	// Create new missile
+	public void createMissile() {
+		// generate missile id
+		String missileId = IdGenerator.enemyMissileIdGenerator();
+
+		// create new missile
+		currentMissile = new EnemyMissile(missileId, destination, flyTime,
+				damage, id, statistics);
+
+		// register listeners
+		for (WarEventListener l : allListeners)
+			currentMissile.registerListeners(l);
+	}
+
+	// check if there is alive missile in the air
+	public EnemyMissile getCurrentMissile() {
+		if (currentMissile != null && currentMissile.isAlive())
+			return currentMissile;
+
+		return null;
+	}
+
+	// Event
+	private void fireEnemyLauncherIsVisibleEvent(boolean visible) {
+		for (WarEventListener l : allListeners) {
+			l.enemyLauncherIsVisible(id, visible);
+		}
+	}
+
+	// Event
+	private void fireLaunchMissileEvent(String missileId) {
 		for (WarEventListener l : allListeners) {
 			l.enemyLaunchMissile(id, missileId, destination, damage);
 		}
+		
+		//update statistics
 		statistics.increaseNumOfLaunchMissiles();
-		theLogger.log(Level.INFO, id +"\tlaunch: " + missileId + "\tdestination: " + destination  + "\n");
 	}
-	
-	public void registerListeners(WarEventListener listener){
+
+	public void registerListeners(WarEventListener listener) {
 		allListeners.add(listener);
 	}
-	
-	//Create new missile
-	public EnemyMissile createMissile(){
-		String missileId = IdGenerator.enemyMissileIdGenerator();
-		int flyTime = (int) Math.random() * 3000;
-		EnemyMissile missile = new EnemyMissile(missileId, destination, flyTime , damage, id, allListeners, statistics);
-		
-		return missile;
-	}
-	
-	public String getLauncherId(){
+
+	public String getLauncherId() {
 		return id;
 	}
-	
-	public boolean getIsHidden(){
+
+	public boolean getIsHidden() {
 		return isHidden;
 	}
-	
-	public EnemyMissile getCurrentMissile(){
-		if(currentMissile != null && currentMissile.isAlive())
-			return currentMissile;
-		
-		return null;
-	}
-	
-	public void stopEnemyLaucher(){
+
+	// use the stop the thread when the launcher is been hit
+	public void stopEnemyLaucher() {
 		beenHit = true;
 	}
 }
