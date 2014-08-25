@@ -27,29 +27,19 @@ public class DefenseMissile extends Thread {
 	}
 
 	public void run() {
-		// Check if the missile is still in the air before trying to destroy
-		try {
-			Thread.sleep(Utils.LAUNCH_DURATION);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		synchronized (this) {
-			if (missileToDestroy.isAlive()/* && Utils.randomSuccesRate()*/) {
+		synchronized (missileToDestroy) {
+			// Check if the missile is still in the air before trying to destroy
+			if (missileToDestroy.isAlive() && Utils.randomSuccesRate()) {
 				missileToDestroy.interrupt();
-				
-				if (missileToDestroy.isBeenHit())
-					fireHitEvent();
-				else
-					fireMissEvent();
-			}// if
-			else {
-				fireMissEvent();
 			}
-		}// synchronized
-		
-		//missileToDestroy = null;
+		}//synchronized
+				
+		if (missileToDestroy.isInterrupted()){
+			fireHitEvent();
+		}
+		else{
+			fireMissEvent();
+		}
 	}// run
 
 	// Event

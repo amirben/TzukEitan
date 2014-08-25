@@ -44,14 +44,18 @@ public class EnemyMissile extends Thread {
 			// this event was already being thrown by the missile (defense) who
 			// hit this
 			// missile.
-			beenHit = true;
+			synchronized (this) {
+				beenHit = true;
+			}
 			
 		} finally {
-			if (!beenHit) {
-				if (Utils.randomSuccesRate()) {
-					fireHitEvent();
-				} else {
-					fireMissEvent();
+			synchronized (this) {
+				if (!beenHit) {
+					if (Utils.randomSuccesRate()) {
+						fireHitEvent();
+					} else {
+						fireMissEvent();
+					}
 				}
 			}
 		}// finally

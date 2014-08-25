@@ -169,7 +169,13 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 	}
 
 	@Override
-	public void warHasBeenFinished() {
+	public void warHasBeenFinished() {	
+		try {
+			view.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		view.showWarHasBeenFinished();
 	}
 
@@ -187,10 +193,18 @@ public class WarControl implements WarEventListener, WarEventUIListener{
 	public void missileNotExist(String defenseLauncherId, String enemyId) {
 		view.showMissileNotExist(defenseLauncherId, enemyId);
 	}
+	
+	@Override
+	public void enemyLauncherNotExist(String defenseLauncherId,
+			String launcherId) {
+		view.showLauncherNotExist(defenseLauncherId, launcherId);
+	}
 
 	@Override
 	public void enemyMissDestination(String whoLaunchedMeId, String id,
 			String destination, String launchTime) {
 		view.showEnemyMissDestination(whoLaunchedMeId, id, destination, launchTime);
 	}
+
+
 }

@@ -16,7 +16,7 @@ import TzukEitan.utils.Utils;
 import TzukEitan.utils.WarFormater;
 import TzukEitan.war.WarStatistics;
 
-public class IronDome extends Thread {
+public class IronDome extends Thread implements Munitions {
 	private List<WarEventListener> allListeners;
 
 	private String id;
@@ -45,53 +45,25 @@ public class IronDome extends Thread {
 				try {
 					wait();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					stopRunning();
+					break;
 				}
-				
 			}
 			
+			// update that this iron-dome is in use
 			isBusy = true;
-			
-			synchronized (toDestroy) {
-				if (toDestroy != null && toDestroy.isAlive()) {
-					try {
-						launchMissile();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+			try {
+				launchMissile();
+				
+				// update that this iron dome is not in use
+				isBusy = false;
+			} catch (InterruptedException e) {
+				stopRunning();
+				break;
 			}
-//			synchronized (this) {
-//				try {
-//					// Wait until user will try to destroy launcher
-//					wait();
-//
-//					// with this boolean you can see if the launcher is
-//					// available to use
-//					isBusy = true;
-//
-//					// checking if the missile you would like to destroy is
-//					// alive (as a thread)
-//					// is not null (if there is any missile)
-//					System.out.println("========> 1"  + toDestroy.isAlive());
-//					
-//					if (toDestroy != null && toDestroy.isAlive()) {
-//						System.out.println("========> 2"  + toDestroy.isAlive());
-//						launchMissile();
-//
-//					}	
-//				}
-//				// Exception is called when launcher has been hit
-//				catch (InterruptedException ex) {
-//					// Use to finish the war
-//				}
-//			}// synchronized
 
-			// update that this iron dome is not in use
-			isBusy = false;
-			//currentMissile = null;
+			// update that is no missile in this iron-dome
+			currentMissile = null;
 
 		}// while
 
@@ -99,7 +71,7 @@ public class IronDome extends Thread {
 		ironDomeHandler.close();
 	}// run
 
-	private void addLoggerHandler() {
+	public void addLoggerHandler() {
 		try {
 			ironDomeHandler = new FileHandler("log\\IronDome" + id
 					+ "Logger.xml", false);
@@ -128,21 +100,31 @@ public class IronDome extends Thread {
 	}
 
 	// Launch missile with given parameters
-	public void launchMissile() throws InterruptedException {
+	public void launchMissile() throws InterruptedException {	
 		createMissile();
-
-		// sleep for launch time
-		//TODO
-		//sleep(Utils.LAUNCH_DURATION);
-
-		// throw event
-		fireLaunchMissileEvent(currentMissile.getMissileId());
-
-		// Start missile and wait until he will finish to be able
-		// to shoot anther one
 		
-		currentMissile.start();
-		currentMissile.join();
+		// sleep for launch time
+		sleep(Utils.LAUNCH_DURATION);
+		
+		// check if the target is still alive
+		if (toDestroy != null && toDestroy.isAlive()) {
+			// throw event
+			fireLaunchMissileEvent(currentMissile.getMissileId());
+	
+			// Start missile and wait until he will finish to be able
+			// to shoot anther one
+			
+			currentMissile.start();
+			currentMissile.join();
+		}
+		else{
+			fireMissileNotExist(toDestroy.getMissileId());
+		}
+	}
+
+	private void fireMissileNotExist(String missileId) {
+		for (WarEventListener l : allListeners)
+			l.missileNotExist(getIronDomeId(), missileId);;
 	}
 
 	public void createMissile() {
@@ -172,11 +154,6 @@ public class IronDome extends Thread {
 		allListeners.add(listener);
 	}
 
-	// use for end the thread
-	public void stopRunningIronDome() {
-		isRunning = false;
-	}
-
 	// check if can shoot from this current iron dome
 	public boolean getIsBusy() {
 		return isBusy;
@@ -185,4 +162,13 @@ public class IronDome extends Thread {
 	public String getIronDomeId() {
 		return id;
 	}
+
+	// use for end the thread
+	@Override
+	public void stopRunning() {
+		currentMissile = null;
+		toDestroy = null;
+		isRunning = false;
+	}
+	
 }

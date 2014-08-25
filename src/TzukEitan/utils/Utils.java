@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 public class Utils {
 	public static final int SECOND = 1000;
 	public static final int FLY_TIME = 3;
-	public static final int LAUNCH_DURATION = 100;
+	public static final int LAUNCH_DURATION = 1000;
 	private static final double DESTRACOTR_SUCCES_RATE = 0.95;
 	private static final double SUCCES_RATE = 0.7;
 	private static final double IS_HIDDEN_RATE = 0.5;

@@ -368,4 +368,10 @@ public class ConsoleView extends Thread {
 				+ enemyId + " doesn't exist!");
 	}
 
+	public void showLauncherNotExist(String defenseLauncherId, String launcherId) {
+		System.out.println("[" + Utils.getCurrentTime() + "] ERROR: "
+				+ defenseLauncherId + " tried to intercept, " + "but missed: "
+				+ launcherId + " doesn't exist!");
+	}
+
 }

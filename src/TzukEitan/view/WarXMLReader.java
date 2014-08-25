@@ -85,7 +85,7 @@ public class WarXMLReader extends Thread {
 				flyTime = -1;
 				damage = -1;
 				System.out.println("ERROR reading from XML");
-				System.out.println(e.getStackTrace());
+				//System.out.println(e.getStackTrace());
 			}
 
 			// create the thread of the missile
@@ -118,8 +118,8 @@ public class WarXMLReader extends Thread {
 					warControl.addEnemyMissile(tempLauncherId, tempDestination, tempDamage, tempFlyTime);
 
 				} catch (InterruptedException e) {
-					System.out.println("ERROR reading from XML");
-					System.out.println(e.getStackTrace());
+					System.out.println("The program is close before expected");
+					//System.out.println(e.getStackTrace());
 				}
 			}
 		});
@@ -197,7 +197,7 @@ public class WarXMLReader extends Thread {
 			
 			} catch (NumberFormatException e) {
 				destructTime = -1;
-				System.out.println(e.getStackTrace());
+				//System.out.println(e.getStackTrace());
 			}
 
 			// create the thread of the missile
@@ -224,8 +224,8 @@ public class WarXMLReader extends Thread {
 						warControl.interceptGivenLauncher(tempLauncherId, tempTargetId);
 					
 				} catch (InterruptedException e) {
-					System.out.println("ERROR reading from XML");
-					System.out.println(e.getStackTrace());
+					System.out.println("The program is close before expected");
+					//System.out.println(e.getStackTrace());
 				}
 			}
 		});

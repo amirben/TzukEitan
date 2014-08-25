@@ -58,4 +58,7 @@ public interface WarEventListener {
 	/** Will occur when the target that selected isn't exist **/
 	public void missileNotExist(String defenseLauncherId, String enemyId);
 
+	/** Will occur when the target that selected isn't exist **/
+	public void enemyLauncherNotExist(String defenseLauncherId, String launcherId);
+
 }

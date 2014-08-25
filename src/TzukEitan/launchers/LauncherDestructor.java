@@ -16,7 +16,7 @@ import TzukEitan.utils.WarFormater;
 import TzukEitan.war.WarStatistics;
 
 /** Plane or Ship **/
-public class LauncherDestructor extends Thread{
+public class LauncherDestructor extends Thread implements Munitions{
 	private List<WarEventListener> allListeners;
 
 	private String id;
@@ -47,36 +47,43 @@ public class LauncherDestructor extends Thread{
 				try {
 					// Wait until user try to destroy missile
 					wait();
-
-					// with this boolean you can see if the launcher is
-					// available to use
-					isBusy = true;
-
-					// checking if the missile you would like to destroy is aive
-					// (as a thread)
-					// is not null (if there is any missile) and if he isn't
-					// hidden
-					if (toDestroy != null && toDestroy.isAlive()
-							&& !toDestroy.getIsHidden()) {
-						launchMissile();
-					} else {
-						fireLauncherIsHiddenEvent(toDestroy.getLauncherId());
-					}
 				} catch (InterruptedException ex) {
 					// used for end the war
+					stopRunning();
+					break;
 				}
 			}// synchronized
+			// with this boolean you can see if the launcher is available to use
+			isBusy = true;
 
+			// checking if the missile you would like to destroy is alive (as a thread)
+			// is not null (if there is any missile) and if he isn't hidden
+			try{
+				if (toDestroy != null && toDestroy.isAlive() && !toDestroy.getIsHidden()) {
+					launchMissile();
+					
+				} else {
+					if (toDestroy != null)
+						fireLauncherIsHiddenEvent(toDestroy.getLauncherId());
+				}
+			} catch (InterruptedException e) {
+				//e.printStackTrace();
+				stopRunning();
+				break;
+			}
+			
 			// update that the launcher is not in use
 			isBusy = false;
-
+			
+			//update that there is no missile to this launcher
+			currentMissile = null;
 		}// while
-
+		
 		// close the handler of the logger
 		launcherDestractorHandler.close();
 	}// run
 
-	private void addLoggerHandler() {
+	public void addLoggerHandler() {
 		try {
 			launcherDestractorHandler = new FileHandler("log\\" + type + ""
 					+ id + "Logger.xml", false);
@@ -110,19 +117,30 @@ public class LauncherDestructor extends Thread{
 		// sleep for launch time;
 		sleep(Utils.LAUNCH_DURATION);
 
-		// Throw event
-		fireLaunchMissileEvent(currentMissile.getMissileId());
+		if (toDestroy != null && toDestroy.isAlive() && !toDestroy.getIsHidden()) {
+			// Throw event
+			fireLaunchMissileEvent(currentMissile.getMissileId());
 
-		// Start missile and wait until he will finish to be able
-		// to shoot anther one
-		currentMissile.start();
-		currentMissile.join();
+			// Start missile and wait until he will finish to be able
+			// to shoot anther one
+			currentMissile.start();
+			currentMissile.join();
+		}
+		else{
+			if (toDestroy.getIsHidden()){
+				fireLauncherIsHiddenEvent(toDestroy.getLauncherId());
+			}
+			else{
+				fireLauncherNotExist(toDestroy.getLauncherId());
+			}
+		}
 	}
+
+
 
 	public void createMissile() {
 		// generate missile id
-		String MissileId = IdGenerator
-				.defenseDestractorLauncherMissileIdGenerator(type.charAt(0));
+		String MissileId = IdGenerator.defenseDestractorLauncherMissileIdGenerator(type.charAt(0));
 
 		// create new missile
 		currentMissile = new DefenseDestructorMissile(MissileId, toDestroy, id,
@@ -151,14 +169,15 @@ public class LauncherDestructor extends Thread{
 			l.defenseMissInterceptionHiddenLauncher(id, type, launcherId);
 		}
 	}
+	
+	// Event
+	private void fireLauncherNotExist(String launcherId) {
+		for (WarEventListener l : allListeners)
+			l.enemyLauncherNotExist(id, launcherId);	
+	}
 
 	public void registerListeners(WarEventListener listener) {
 		allListeners.add(listener);
-	}
-
-	// use for end the thread
-	public void stopRunningDestractor() {
-		isRunning = false;
 	}
 
 	// check if can shoot from this current launcher destructor
@@ -168,5 +187,12 @@ public class LauncherDestructor extends Thread{
 
 	public String getDestructorId() {
 		return id;
+	}
+
+	@Override
+	// use for end the thread
+	public void stopRunning() {
+		toDestroy = null;
+		isRunning = false;
 	}
 }

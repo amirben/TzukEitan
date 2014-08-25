@@ -15,7 +15,7 @@ import TzukEitan.utils.Utils;
 import TzukEitan.utils.WarFormater;
 import TzukEitan.war.WarStatistics;
 
-public class EnemyLauncher extends Thread {
+public class EnemyLauncher extends Thread implements Munitions{
 	private List<WarEventListener> allListeners;
 
 	private String id;
@@ -49,16 +49,23 @@ public class EnemyLauncher extends Thread {
 				try {
 					// Wait until user want to fire a missile
 					wait();
-
-					launchMissile();
+					
 				}
 				// Exception is called when launcher has been hit
 				catch (InterruptedException ex) {
 					// firehasBeenHitEvent() ==> not needed because
 					// the DefenseDestructorMissile call this event
-					stopEnemyLaucher();
+					stopRunning();
+					break;
 				}
 			}// synchronized
+			try {
+				launchMissile();
+			} catch (InterruptedException e) {
+				stopRunning();
+				break;
+				//e.printStackTrace();
+			}
 
 			// update that this launcher is not in use
 			currentMissile = null;
@@ -68,8 +75,9 @@ public class EnemyLauncher extends Thread {
 		// close the handler of the logger
 		enemyLauncherHandler.close();
 	}// run
-
-	private void addLoggerHandler() {
+	
+	@Override
+	public void addLoggerHandler() {
 		try {
 			enemyLauncherHandler = new FileHandler("log\\Launcher" + id
 					+ "Logger.xml", false);
@@ -99,6 +107,7 @@ public class EnemyLauncher extends Thread {
 	}
 
 	// launch missile with given parameters
+	@Override
 	public void launchMissile() throws InterruptedException {
 		createMissile();
 
@@ -180,9 +189,11 @@ public class EnemyLauncher extends Thread {
 	public boolean getIsHidden() {
 		return isHidden;
 	}
-
+	
 	// use the stop the thread when the launcher is been hit
-	public void stopEnemyLaucher() {
+	@Override
+	public void stopRunning() {
+		currentMissile = null;
 		beenHit = true;
 	}
 }

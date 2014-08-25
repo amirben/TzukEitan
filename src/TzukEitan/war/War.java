@@ -24,7 +24,6 @@ public class War extends Thread {
 	private ArrayList<IronDome> ironDomeArr = new ArrayList<IronDome>();
 	private ArrayList<LauncherDestructor> launcherDestractorArr = new ArrayList<LauncherDestructor>();
 	private ArrayList<EnemyLauncher> enemyLauncherArr = new ArrayList<EnemyLauncher>();
-	private boolean isRunning = true;
 	private WarStatistics statistics;
 	private String[] targetCities = { "Sderot", "Ofakim", "Beer-Sheva",
 			"Netivot", "Tel-Aviv", "Re'ut" };
@@ -87,12 +86,13 @@ public class War extends Thread {
 				if (el.getCurrentMissile() != null) {
 					el.getCurrentMissile().join();
 				}
+				
+				el.stopRunning();
+				el.interrupt();
+				el.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
-			el.stopEnemyLaucher();
-			el.interrupt();
 		}
 
 		for (LauncherDestructor ld : launcherDestractorArr) {
@@ -100,12 +100,12 @@ public class War extends Thread {
 				if (ld.getCurrentMissile() != null) {
 					ld.getCurrentMissile().join();
 				}
+				
+				ld.stopRunning();
+				ld.interrupt();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
-			ld.stopRunningDestractor();
-			ld.interrupt();
 		}
 
 		for (IronDome ironDome : ironDomeArr) {
@@ -113,12 +113,12 @@ public class War extends Thread {
 				if (ironDome.getCurrentMissile() != null) {
 					ironDome.getCurrentMissile().join();
 				}
+				
+				ironDome.stopRunning();
+				ironDome.interrupt();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
-			ironDome.stopRunningIronDome();
-			ironDome.interrupt();
 		}
 	}// endAllmunitions
 

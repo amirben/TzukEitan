@@ -15,7 +15,7 @@ public class DefenseDestructorMissile extends Thread {
 	private String id;
 	private String whoLaunchedMeId;
 	private String whoLaunchedMeType;
-	private EnemyLauncher LauncherToDestroy;
+	private EnemyLauncher launcherToDestroy;
 	private WarStatistics statistics;
 
 	public DefenseDestructorMissile(String id, EnemyLauncher LauncherToDestroy,
@@ -25,31 +25,34 @@ public class DefenseDestructorMissile extends Thread {
 		allListeners = new LinkedList<WarEventListener>();
 
 		this.id = id;
-		this.LauncherToDestroy = LauncherToDestroy;
+		this.launcherToDestroy = LauncherToDestroy;
 		this.whoLaunchedMeId = whoLunchedMeId;
 		this.whoLaunchedMeType = whoLaunchedMeType;
 		this.statistics = statistics;
 	}
 
 	public void run() {
-		synchronized (this) {
-			if (LauncherToDestroy.isAlive() && !LauncherToDestroy.getIsHidden()
+		synchronized (launcherToDestroy) {
+			if (launcherToDestroy.isAlive() && !launcherToDestroy.getIsHidden()
 					&& Utils.randomDestractorSucces()) {
 				// Check if the launcher is hidden or not
-				fireHitEvent();
-				LauncherToDestroy.interrupt();
-
-			} else {
-				fireMissEvent();
-			}// if & else
+				launcherToDestroy.interrupt();
+			}
 		}// synchronized
+	
+		if(launcherToDestroy.isInterrupted()){
+			fireHitEvent();
+			
+		}else {
+			fireMissEvent();
+		}
 	}
 
 	// Event
 	private void fireHitEvent() {
 		for (WarEventListener l : allListeners) {
 			l.defenseHitInterceptionLauncher(whoLaunchedMeId,
-					whoLaunchedMeType, id, LauncherToDestroy.getLauncherId());
+					whoLaunchedMeType, id, launcherToDestroy.getLauncherId());
 		}
 
 		// update statistics
@@ -60,7 +63,7 @@ public class DefenseDestructorMissile extends Thread {
 	private void fireMissEvent() {
 		for (WarEventListener l : allListeners) {
 			l.defenseMissInterceptionLauncher(whoLaunchedMeId,
-					whoLaunchedMeType, id, LauncherToDestroy.getLauncherId());
+					whoLaunchedMeType, id, launcherToDestroy.getLauncherId());
 		}
 	}
 
